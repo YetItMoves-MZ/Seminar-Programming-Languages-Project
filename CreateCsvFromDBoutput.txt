@@ -1,0 +1,154 @@
+
+chinook.db db Schema
+tables: [('albums',), ('sqlite_sequence',), ('artists',), ('customers',), ('employees',), ('genres',), ('invoices',), ('invoice_items',), ('media_types',), ('playlists',), ('playlist_track',), ('tracks',), ('sqlite_stat1',)]
+Table Name:  albums
+   albums attributes:
+    (0, 'AlbumId', 'INTEGER', 1, None, 1)
+    (1, 'Title', 'NVARCHAR(160)', 1, None, 0)
+    (2, 'ArtistId', 'INTEGER', 1, None, 0)
+
+
+Table Name:  sqlite_sequence
+   sqlite_sequence attributes:
+    (0, 'name', '', 0, None, 0)
+    (1, 'seq', '', 0, None, 0)
+
+
+Table Name:  artists
+   artists attributes:
+    (0, 'ArtistId', 'INTEGER', 1, None, 1)
+    (1, 'Name', 'NVARCHAR(120)', 0, None, 0)
+
+
+Table Name:  customers
+   customers attributes:
+    (0, 'CustomerId', 'INTEGER', 1, None, 1)
+    (1, 'FirstName', 'NVARCHAR(40)', 1, None, 0)
+    (2, 'LastName', 'NVARCHAR(20)', 1, None, 0)
+    (3, 'Company', 'NVARCHAR(80)', 0, None, 0)
+    (4, 'Address', 'NVARCHAR(70)', 0, None, 0)
+    (5, 'City', 'NVARCHAR(40)', 0, None, 0)
+    (6, 'State', 'NVARCHAR(40)', 0, None, 0)
+    (7, 'Country', 'NVARCHAR(40)', 0, None, 0)
+    (8, 'PostalCode', 'NVARCHAR(10)', 0, None, 0)
+    (9, 'Phone', 'NVARCHAR(24)', 0, None, 0)
+    (10, 'Fax', 'NVARCHAR(24)', 0, None, 0)
+    (11, 'Email', 'NVARCHAR(60)', 1, None, 0)
+    (12, 'SupportRepId', 'INTEGER', 0, None, 0)
+
+
+Table Name:  employees
+   employees attributes:
+    (0, 'EmployeeId', 'INTEGER', 1, None, 1)
+    (1, 'LastName', 'NVARCHAR(20)', 1, None, 0)
+    (2, 'FirstName', 'NVARCHAR(20)', 1, None, 0)
+    (3, 'Title', 'NVARCHAR(30)', 0, None, 0)
+    (4, 'ReportsTo', 'INTEGER', 0, None, 0)
+    (5, 'BirthDate', 'DATETIME', 0, None, 0)
+    (6, 'HireDate', 'DATETIME', 0, None, 0)
+    (7, 'Address', 'NVARCHAR(70)', 0, None, 0)
+    (8, 'City', 'NVARCHAR(40)', 0, None, 0)
+    (9, 'State', 'NVARCHAR(40)', 0, None, 0)
+    (10, 'Country', 'NVARCHAR(40)', 0, None, 0)
+    (11, 'PostalCode', 'NVARCHAR(10)', 0, None, 0)
+    (12, 'Phone', 'NVARCHAR(24)', 0, None, 0)
+    (13, 'Fax', 'NVARCHAR(24)', 0, None, 0)
+    (14, 'Email', 'NVARCHAR(60)', 0, None, 0)
+
+
+Table Name:  genres
+   genres attributes:
+    (0, 'GenreId', 'INTEGER', 1, None, 1)
+    (1, 'Name', 'NVARCHAR(120)', 0, None, 0)
+
+
+Table Name:  invoices
+   invoices attributes:
+    (0, 'InvoiceId', 'INTEGER', 1, None, 1)
+    (1, 'CustomerId', 'INTEGER', 1, None, 0)
+    (2, 'InvoiceDate', 'DATETIME', 1, None, 0)
+    (3, 'BillingAddress', 'NVARCHAR(70)', 0, None, 0)
+    (4, 'BillingCity', 'NVARCHAR(40)', 0, None, 0)
+    (5, 'BillingState', 'NVARCHAR(40)', 0, None, 0)
+    (6, 'BillingCountry', 'NVARCHAR(40)', 0, None, 0)
+    (7, 'BillingPostalCode', 'NVARCHAR(10)', 0, None, 0)
+    (8, 'Total', 'NUMERIC(10,2)', 1, None, 0)
+
+
+Table Name:  invoice_items
+   invoice_items attributes:
+    (0, 'InvoiceLineId', 'INTEGER', 1, None, 1)
+    (1, 'InvoiceId', 'INTEGER', 1, None, 0)
+    (2, 'TrackId', 'INTEGER', 1, None, 0)
+    (3, 'UnitPrice', 'NUMERIC(10,2)', 1, None, 0)
+    (4, 'Quantity', 'INTEGER', 1, None, 0)
+
+
+Table Name:  media_types
+   media_types attributes:
+    (0, 'MediaTypeId', 'INTEGER', 1, None, 1)
+    (1, 'Name', 'NVARCHAR(120)', 0, None, 0)
+
+
+Table Name:  playlists
+   playlists attributes:
+    (0, 'PlaylistId', 'INTEGER', 1, None, 1)
+    (1, 'Name', 'NVARCHAR(120)', 0, None, 0)
+
+
+Table Name:  playlist_track
+   playlist_track attributes:
+    (0, 'PlaylistId', 'INTEGER', 1, None, 1)
+    (1, 'TrackId', 'INTEGER', 1, None, 2)
+
+
+Table Name:  tracks
+   tracks attributes:
+    (0, 'TrackId', 'INTEGER', 1, None, 1)
+    (1, 'Name', 'NVARCHAR(200)', 1, None, 0)
+    (2, 'AlbumId', 'INTEGER', 0, None, 0)
+    (3, 'MediaTypeId', 'INTEGER', 1, None, 0)
+    (4, 'GenreId', 'INTEGER', 0, None, 0)
+    (5, 'Composer', 'NVARCHAR(220)', 0, None, 0)
+    (6, 'Milliseconds', 'INTEGER', 1, None, 0)
+    (7, 'Bytes', 'INTEGER', 0, None, 0)
+    (8, 'UnitPrice', 'NUMERIC(10,2)', 1, None, 0)
+
+
+Table Name:  sqlite_stat1
+   sqlite_stat1 attributes:
+    (0, 'tbl', '', 0, None, 0)
+    (1, 'idx', '', 0, None, 0)
+    (2, 'stat', '', 0, None, 0)
+
+
+
+
+Table Name:  genres
+GenreId             Name                
+1                   Rock                
+2                   Jazz                
+3                   Metal               
+4                   Alternative & Punk  
+5                   Rock And Roll       
+6                   Blues               
+7                   Latin               
+8                   Reggae              
+9                   Pop                 
+10                  Soundtrack          
+11                  Bossa Nova          
+12                  Easy Listening      
+13                  Heavy Metal         
+14                  R&B/Soul            
+15                  Electronica/Dance   
+16                  World               
+17                  Hip Hop/Rap         
+18                  Science Fiction     
+19                  TV Shows            
+20                  Sci Fi & Fantasy    
+21                  Drama               
+22                  Comedy              
+23                  Alternative         
+24                  Classical           
+25                  Opera               
+

@@ -1,0 +1,16 @@
+index,tbl,idx,stat
+0,tracks,IFK_TrackMediaTypeId,3503 701
+1,tracks,IFK_TrackGenreId,3503 141
+2,tracks,IFK_TrackAlbumId,3503 11
+3,playlist_track,IFK_PlaylistTrackTrackId,8715 3
+4,playlist_track,sqlite_autoindex_playlist_track_1,8715 623 1
+5,albums,IFK_AlbumArtistId,347 2
+6,artists,,275
+7,customers,IFK_CustomerSupportRepId,59 20
+8,playlists,,18
+9,employees,IFK_EmployeeReportsTo,8 2
+10,genres,,25
+11,invoices,IFK_InvoiceCustomerId,412 7
+12,media_types,,5
+13,invoice_items,IFK_InvoiceLineTrackId,2240 2
+14,invoice_items,IFK_InvoiceLineInvoiceId,2240 6

@@ -1,0 +1,653 @@
+
+Q0: 
+    SELECT invoice_."BillingCountry" AS "Country"
+    FROM invoices AS invoice_
+    WHERE invoice_."BillingCountry" 
+          IN ('USA', 'United Kingdom', 'Canada')
+    GROUP BY 1
+    ORDER BY 1 DESC
+
+          Country
+0  United Kingdom
+1             USA
+2          Canada
+
+
+          Country
+0  United Kingdom
+1             USA
+2          Canada
+['Country']
+('United Kingdom',)
+('USA',)
+('Canada',)
+
+Q1: 
+      SELECT CAST(strftime('%Y', invoice_."InvoiceDate") AS BIGINT) 
+        AS "Year",
+        ROUND(SUM(CASE WHEN invoice_."BillingCountry" = 'USA'
+          THEN invoice_."Total" END), 2) AS "USA",
+        ROUND(SUM(CASE WHEN invoice_."BillingCountry" = 'United Kingdom'
+          THEN invoice_."Total" END), 2) AS "United Kingdom",
+        ROUND(SUM(CASE WHEN invoice_."BillingCountry" = 'Canada'
+          THEN invoice_."Total" END), 2) AS "Canada"
+      FROM invoices AS invoice_
+      WHERE invoice_."BillingCountry" IN 
+           ('USA', 'United Kingdom', 'Canada')
+      GROUP BY 1
+      ORDER BY 1 DESC
+
+   Year     USA  United Kingdom  Canada
+0  2013   85.14           28.71   72.27
+1  2012  127.98            9.90   42.57
+2  2011  103.01           17.82   55.44
+3  2010  102.98           30.69   76.26
+4  2009  103.95           25.74   57.42
+
+
+   Year     USA  United Kingdom  Canada
+0  2013   85.14           28.71   72.27
+1  2012  127.98            9.90   42.57
+2  2011  103.01           17.82   55.44
+3  2010  102.98           30.69   76.26
+4  2009  103.95           25.74   57.42
+['Year', 'USA', 'United Kingdom', 'Canada']
+(2013, 85.14, 28.71, 72.27)
+(2012, 127.98, 9.9, 42.57)
+(2011, 103.01, 17.82, 55.44)
+(2010, 102.98, 30.69, 76.26)
+(2009, 103.95, 25.74, 57.42)
+
+Q2: -- Provide a query only showing the Customers from Brazil.
+
+      SELECT FirstName||" "||LastName as "Customers From Brazil"
+      FROM Customers
+      WHERE Country = "Brazil";
+
+  Customers From Brazil
+0        Luís Gonçalves
+1       Eduardo Martins
+2       Alexandre Rocha
+3       Roberto Almeida
+4        Fernanda Ramos
+
+
+  Customers From Brazil
+0        Luís Gonçalves
+1       Eduardo Martins
+2       Alexandre Rocha
+3       Roberto Almeida
+4        Fernanda Ramos
+['Customers From Brazil']
+('Luís Gonçalves',)
+('Eduardo Martins',)
+('Alexandre Rocha',)
+('Roberto Almeida',)
+('Fernanda Ramos',)
+
+Q3: -- Provide a query showing the Invoices of customers who are from Brazil. 
+       The resultant table should show the customer's full name, Invoice ID,
+       Date of the invoice and billing country.
+
+    SELECT c.FirstName||" "||c.LastName as "Customers", 
+           i.InvoiceId,i.InvoiceDate,i.BillingCountry
+    FROM Customers c
+    LEFT JOIN Invoices i
+    ON i.CustomerId = c.CustomerId
+    WHERE c.Country = "Brazil";
+
+          Customers  InvoiceId          InvoiceDate BillingCountry
+0    Luís Gonçalves         98  2010-03-11 00:00:00         Brazil
+1    Luís Gonçalves        121  2010-06-13 00:00:00         Brazil
+2    Luís Gonçalves        143  2010-09-15 00:00:00         Brazil
+3    Luís Gonçalves        195  2011-05-06 00:00:00         Brazil
+4    Luís Gonçalves        316  2012-10-27 00:00:00         Brazil
+5    Luís Gonçalves        327  2012-12-07 00:00:00         Brazil
+6    Luís Gonçalves        382  2013-08-07 00:00:00         Brazil
+7   Eduardo Martins         25  2009-04-09 00:00:00         Brazil
+8   Eduardo Martins        154  2010-11-14 00:00:00         Brazil
+9   Eduardo Martins        177  2011-02-16 00:00:00         Brazil
+10  Eduardo Martins        199  2011-05-21 00:00:00         Brazil
+11  Eduardo Martins        251  2012-01-09 00:00:00         Brazil
+12  Eduardo Martins        372  2013-07-02 00:00:00         Brazil
+13  Eduardo Martins        383  2013-08-12 00:00:00         Brazil
+14  Alexandre Rocha         57  2009-09-06 00:00:00         Brazil
+15  Alexandre Rocha         68  2009-10-17 00:00:00         Brazil
+16  Alexandre Rocha        123  2010-06-17 00:00:00         Brazil
+17  Alexandre Rocha        252  2012-01-22 00:00:00         Brazil
+18  Alexandre Rocha        275  2012-04-25 00:00:00         Brazil
+19  Alexandre Rocha        297  2012-07-28 00:00:00         Brazil
+20  Alexandre Rocha        349  2013-03-18 00:00:00         Brazil
+21  Roberto Almeida         34  2009-05-23 00:00:00         Brazil
+22  Roberto Almeida        155  2010-11-14 00:00:00         Brazil
+23  Roberto Almeida        166  2010-12-25 00:00:00         Brazil
+24  Roberto Almeida        221  2011-08-25 00:00:00         Brazil
+25  Roberto Almeida        350  2013-03-31 00:00:00         Brazil
+26  Roberto Almeida        373  2013-07-03 00:00:00         Brazil
+27  Roberto Almeida        395  2013-10-05 00:00:00         Brazil
+28   Fernanda Ramos         35  2009-06-05 00:00:00         Brazil
+29   Fernanda Ramos         58  2009-09-07 00:00:00         Brazil
+30   Fernanda Ramos         80  2009-12-10 00:00:00         Brazil
+31   Fernanda Ramos        132  2010-07-31 00:00:00         Brazil
+32   Fernanda Ramos        253  2012-01-22 00:00:00         Brazil
+33   Fernanda Ramos        264  2012-03-03 00:00:00         Brazil
+34   Fernanda Ramos        319  2012-11-01 00:00:00         Brazil
+
+
+          Customers  InvoiceId          InvoiceDate BillingCountry
+0    Luís Gonçalves         98  2010-03-11 00:00:00         Brazil
+1    Luís Gonçalves        121  2010-06-13 00:00:00         Brazil
+2    Luís Gonçalves        143  2010-09-15 00:00:00         Brazil
+3    Luís Gonçalves        195  2011-05-06 00:00:00         Brazil
+4    Luís Gonçalves        316  2012-10-27 00:00:00         Brazil
+5    Luís Gonçalves        327  2012-12-07 00:00:00         Brazil
+6    Luís Gonçalves        382  2013-08-07 00:00:00         Brazil
+7   Eduardo Martins         25  2009-04-09 00:00:00         Brazil
+8   Eduardo Martins        154  2010-11-14 00:00:00         Brazil
+9   Eduardo Martins        177  2011-02-16 00:00:00         Brazil
+10  Eduardo Martins        199  2011-05-21 00:00:00         Brazil
+11  Eduardo Martins        251  2012-01-09 00:00:00         Brazil
+12  Eduardo Martins        372  2013-07-02 00:00:00         Brazil
+13  Eduardo Martins        383  2013-08-12 00:00:00         Brazil
+14  Alexandre Rocha         57  2009-09-06 00:00:00         Brazil
+15  Alexandre Rocha         68  2009-10-17 00:00:00         Brazil
+16  Alexandre Rocha        123  2010-06-17 00:00:00         Brazil
+17  Alexandre Rocha        252  2012-01-22 00:00:00         Brazil
+18  Alexandre Rocha        275  2012-04-25 00:00:00         Brazil
+19  Alexandre Rocha        297  2012-07-28 00:00:00         Brazil
+20  Alexandre Rocha        349  2013-03-18 00:00:00         Brazil
+21  Roberto Almeida         34  2009-05-23 00:00:00         Brazil
+22  Roberto Almeida        155  2010-11-14 00:00:00         Brazil
+23  Roberto Almeida        166  2010-12-25 00:00:00         Brazil
+24  Roberto Almeida        221  2011-08-25 00:00:00         Brazil
+25  Roberto Almeida        350  2013-03-31 00:00:00         Brazil
+26  Roberto Almeida        373  2013-07-03 00:00:00         Brazil
+27  Roberto Almeida        395  2013-10-05 00:00:00         Brazil
+28   Fernanda Ramos         35  2009-06-05 00:00:00         Brazil
+29   Fernanda Ramos         58  2009-09-07 00:00:00         Brazil
+30   Fernanda Ramos         80  2009-12-10 00:00:00         Brazil
+31   Fernanda Ramos        132  2010-07-31 00:00:00         Brazil
+32   Fernanda Ramos        253  2012-01-22 00:00:00         Brazil
+33   Fernanda Ramos        264  2012-03-03 00:00:00         Brazil
+34   Fernanda Ramos        319  2012-11-01 00:00:00         Brazil
+['Customers', 'InvoiceId', 'InvoiceDate', 'BillingCountry']
+('Luís Gonçalves', 98, '2010-03-11 00:00:00', 'Brazil')
+('Luís Gonçalves', 121, '2010-06-13 00:00:00', 'Brazil')
+('Luís Gonçalves', 143, '2010-09-15 00:00:00', 'Brazil')
+('Luís Gonçalves', 195, '2011-05-06 00:00:00', 'Brazil')
+('Luís Gonçalves', 316, '2012-10-27 00:00:00', 'Brazil')
+('Luís Gonçalves', 327, '2012-12-07 00:00:00', 'Brazil')
+('Luís Gonçalves', 382, '2013-08-07 00:00:00', 'Brazil')
+('Eduardo Martins', 25, '2009-04-09 00:00:00', 'Brazil')
+('Eduardo Martins', 154, '2010-11-14 00:00:00', 'Brazil')
+('Eduardo Martins', 177, '2011-02-16 00:00:00', 'Brazil')
+
+Q4: -- Provide a query that shows the number
+      of invoices per country, using: GROUP BY
+
+    SELECT BillingCountry, COUNT(InvoiceId)
+    FROM Invoices
+    GROUP BY BillingCountry;
+
+    BillingCountry  COUNT(InvoiceId)
+0        Argentina                 7
+1        Australia                 7
+2          Austria                 7
+3          Belgium                 7
+4           Brazil                35
+5           Canada                56
+6            Chile                 7
+7   Czech Republic                14
+8          Denmark                 7
+9          Finland                 7
+10          France                35
+11         Germany                28
+12         Hungary                 7
+13           India                13
+14         Ireland                 7
+15           Italy                 7
+16     Netherlands                 7
+17          Norway                 7
+18          Poland                 7
+19        Portugal                14
+20           Spain                 7
+21          Sweden                 7
+22             USA                91
+23  United Kingdom                21
+
+
+    BillingCountry  COUNT(InvoiceId)
+0        Argentina                 7
+1        Australia                 7
+2          Austria                 7
+3          Belgium                 7
+4           Brazil                35
+5           Canada                56
+6            Chile                 7
+7   Czech Republic                14
+8          Denmark                 7
+9          Finland                 7
+10          France                35
+11         Germany                28
+12         Hungary                 7
+13           India                13
+14         Ireland                 7
+15           Italy                 7
+16     Netherlands                 7
+17          Norway                 7
+18          Poland                 7
+19        Portugal                14
+20           Spain                 7
+21          Sweden                 7
+22             USA                91
+23  United Kingdom                21
+['BillingCountry', 'COUNT(InvoiceId)']
+('Argentina', 7)
+('Australia', 7)
+('Austria', 7)
+('Belgium', 7)
+('Brazil', 35)
+('Canada', 56)
+('Chile', 7)
+('Czech Republic', 14)
+('Denmark', 7)
+('Finland', 7)
+
+Q5: -- Looking at the InvoiceLine table, provide
+       a query  that COUNTs the number of line items
+       for Invoice ID 37.
+
+    SELECT COUNT(InvoiceLineId) as "Number Of Line Items"
+    FROM Invoice_items 
+    WHERE InvoiceId = 37;
+
+   Number Of Line Items
+0                     4
+
+
+   Number Of Line Items
+0                     4
+['Number Of Line Items']
+(4,)
+
+Q6: -- Provide a query that shows the Invoice Total,
+       Customer name, Country and Sale Agent name
+       for all invoices and customers.
+
+    SELECT  c.FirstName||" "||c.LastName as "Customer", 
+            i.BillingCountry, e.FirstName||" "||e.LastName 
+            as "Sale Agent", i.Total
+    FROM Invoices i
+    JOIN Customers c
+    ON c.CustomerId = i.CustomerId
+    JOIN Employees e
+    ON e.EmployeeId = c.SupportRepId;
+
+            Customer BillingCountry    Sale Agent  Total
+0     Luís Gonçalves         Brazil  Jane Peacock   3.98
+1     Luís Gonçalves         Brazil  Jane Peacock   3.96
+2     Luís Gonçalves         Brazil  Jane Peacock   5.94
+3     Luís Gonçalves         Brazil  Jane Peacock   0.99
+4     Luís Gonçalves         Brazil  Jane Peacock   1.98
+..               ...            ...           ...    ...
+407  Puja Srivastava          India  Jane Peacock   5.94
+408  Puja Srivastava          India  Jane Peacock   1.99
+409  Puja Srivastava          India  Jane Peacock   1.98
+410  Puja Srivastava          India  Jane Peacock  13.86
+411  Puja Srivastava          India  Jane Peacock   8.91
+
+[412 rows x 4 columns]
+
+
+            Customer BillingCountry    Sale Agent  Total
+0     Luís Gonçalves         Brazil  Jane Peacock   3.98
+1     Luís Gonçalves         Brazil  Jane Peacock   3.96
+2     Luís Gonçalves         Brazil  Jane Peacock   5.94
+3     Luís Gonçalves         Brazil  Jane Peacock   0.99
+4     Luís Gonçalves         Brazil  Jane Peacock   1.98
+..               ...            ...           ...    ...
+407  Puja Srivastava          India  Jane Peacock   5.94
+408  Puja Srivastava          India  Jane Peacock   1.99
+409  Puja Srivastava          India  Jane Peacock   1.98
+410  Puja Srivastava          India  Jane Peacock  13.86
+411  Puja Srivastava          India  Jane Peacock   8.91
+
+[412 rows x 4 columns]
+['Customer', 'BillingCountry', 'Sale Agent', 'Total']
+('Luís Gonçalves', 'Brazil', 'Jane Peacock', 3.98)
+('Luís Gonçalves', 'Brazil', 'Jane Peacock', 3.96)
+('Luís Gonçalves', 'Brazil', 'Jane Peacock', 5.94)
+('Luís Gonçalves', 'Brazil', 'Jane Peacock', 0.99)
+('Luís Gonçalves', 'Brazil', 'Jane Peacock', 1.98)
+('Luís Gonçalves', 'Brazil', 'Jane Peacock', 13.86)
+('Luís Gonçalves', 'Brazil', 'Jane Peacock', 8.91)
+('Leonie Köhler', 'Germany', 'Steve Johnson', 1.98)
+('Leonie Köhler', 'Germany', 'Steve Johnson', 13.86)
+('Leonie Köhler', 'Germany', 'Steve Johnson', 8.91)
+
+Q7: -- Provide a query that shows all Invoices
+ but includes the number of invoice line items.
+
+    SELECT i.InvoiceId, COUNT(il.InvoiceLineId)
+           as "Number of invoice lines "
+    FROM Invoices i
+    JOIN Invoice_items il
+    ON i.InvoiceId = il.InvoiceId
+    GROUP BY i.InvoiceId;
+
+     InvoiceId  Number of invoice lines 
+0            1                         2
+1            2                         4
+2            3                         6
+3            4                         9
+4            5                        14
+..         ...                       ...
+407        408                         4
+408        409                         6
+409        410                         9
+410        411                        14
+411        412                         1
+
+[412 rows x 2 columns]
+
+
+     InvoiceId  Number of invoice lines 
+0            1                         2
+1            2                         4
+2            3                         6
+3            4                         9
+4            5                        14
+..         ...                       ...
+407        408                         4
+408        409                         6
+409        410                         9
+410        411                        14
+411        412                         1
+
+[412 rows x 2 columns]
+['InvoiceId', 'Number of invoice lines ']
+(1, 2)
+(2, 4)
+(3, 6)
+(4, 9)
+(5, 14)
+(6, 1)
+(7, 2)
+(8, 2)
+(9, 4)
+(10, 6)
+
+Q8: -- Provide a query that shows all the Tracks,
+       but displays no IDs. The result should include
+       the Album name, Media type and Genre.
+
+    SELECT a.Title as "Album", mt.Name as "Media type", 
+           g.Name as "Genre"
+    FROM Tracks t
+    JOIN Albums a 
+    ON a.AlbumId = t.AlbumId
+    JOIN Media_types mt 
+    ON mt.MediaTypeId = t.MediaTypeId
+    JOIN Genres g
+    ON t.GenreId = g.GenreId
+    GROUP BY a.Title;
+
+                                                 Album  ...      Genre
+0                               ...And Justice For All  ...      Metal
+1    20th Century Masters - The Millennium Collecti...  ...       Rock
+2                        A Copland Celebration, Vol. I  ...  Classical
+3                           A Matter of Life and Death  ...       Rock
+4                                      A Real Dead One  ...      Metal
+..                                                 ...  ...        ...
+342                                     Warner 25 Anos  ...       Jazz
+343                       Weill: The Seven Deadly Sins  ...  Classical
+344                                             Worlds  ...       Jazz
+345                                            Zooropa  ...       Rock
+346                        [1997] Black Light Syndrome  ...       Rock
+
+[347 rows x 3 columns]
+
+
+                                                 Album  ...      Genre
+0                               ...And Justice For All  ...      Metal
+1    20th Century Masters - The Millennium Collecti...  ...       Rock
+2                        A Copland Celebration, Vol. I  ...  Classical
+3                           A Matter of Life and Death  ...       Rock
+4                                      A Real Dead One  ...      Metal
+..                                                 ...  ...        ...
+342                                     Warner 25 Anos  ...       Jazz
+343                       Weill: The Seven Deadly Sins  ...  Classical
+344                                             Worlds  ...       Jazz
+345                                            Zooropa  ...       Rock
+346                        [1997] Black Light Syndrome  ...       Rock
+
+[347 rows x 3 columns]
+['Album', 'Media type', 'Genre']
+('...And Justice For All', 'MPEG audio file', 'Metal')
+('20th Century Masters - The Millennium Collection: The Best of Scorpions', 'Protected AAC audio file', 'Rock')
+('A Copland Celebration, Vol. I', 'Protected AAC audio file', 'Classical')
+('A Matter of Life and Death', 'Protected AAC audio file', 'Rock')
+('A Real Dead One', 'MPEG audio file', 'Metal')
+('A Real Live One', 'MPEG audio file', 'Metal')
+('A Soprano Inspired', 'Protected AAC audio file', 'Classical')
+('A TempestadeTempestade Ou O Livro Dos Dias', 'MPEG audio file', 'Latin')
+('A-Sides', 'MPEG audio file', 'Rock')
+('Ace Of Spades', 'MPEG audio file', 'Metal')
+
+Q9: -- How many Invoices were there in 2009 and 2011?
+
+
+    SELECT COUNT(InvoiceId) as "Total Invoices"
+    FROM Invoices
+    WHERE InvoiceDate between "2009-01-01" AND "2011-01-01";
+
+   Total Invoices
+0             166
+
+
+   Total Invoices
+0             166
+['Total Invoices']
+(166,)
+
+Q10: -- Provide a query that shows the most
+        purchased Media Type.
+
+
+    SELECT "Media Type" as "Top Media Type", 
+           MAX("Times Purchased") as "Times Purchased"
+    FROM 
+    (SELECT m.Name as "Media type" , 
+            COUNT (il.Quantity) as "Times Purchased"
+     FROM Invoice_items il
+     JOIN Tracks t
+     ON il.TrackId = t.Trackid
+     JOIN media_types m
+     ON m.MediaTypeId = t.MediaTypeId
+     GROUP BY m.Name);
+
+    Top Media Type  Times Purchased
+0  MPEG audio file             1976
+
+
+    Top Media Type  Times Purchased
+0  MPEG audio file             1976
+['Top Media Type', 'Times Purchased']
+('MPEG audio file', 1976)
+
+Q11: -- Provide a query that shows the total number 
+       of tracks in each playlist.
+       The Playlist name should be included
+       on the resultant table.
+
+    SELECT p.Name, COUNT(pt.TrackId) as "Number Of Tracks"
+    FROM Playlists p
+    JOIN Playlist_track pt
+    ON p.PlaylistId = pt.PlaylistId
+    GROUP BY p.name;
+
+                          Name  Number Of Tracks
+0                   90’s Music              1477
+1              Brazilian Music                39
+2                    Classical                75
+3    Classical 101 - Deep Cuts                25
+4   Classical 101 - Next Steps                25
+5   Classical 101 - The Basics                25
+6                       Grunge                15
+7          Heavy Metal Classic                26
+8                        Music              6580
+9                 Music Videos                 1
+10                 On-The-Go 1                 1
+11                    TV Shows               426
+
+
+                          Name  Number Of Tracks
+0                   90’s Music              1477
+1              Brazilian Music                39
+2                    Classical                75
+3    Classical 101 - Deep Cuts                25
+4   Classical 101 - Next Steps                25
+5   Classical 101 - The Basics                25
+6                       Grunge                15
+7          Heavy Metal Classic                26
+8                        Music              6580
+9                 Music Videos                 1
+10                 On-The-Go 1                 1
+11                    TV Shows               426
+['Name', 'Number Of Tracks']
+('90’s Music', 1477)
+('Brazilian Music', 39)
+('Classical', 75)
+('Classical 101 - Deep Cuts', 25)
+('Classical 101 - Next Steps', 25)
+('Classical 101 - The Basics', 25)
+('Grunge', 15)
+('Heavy Metal Classic', 26)
+('Music', 6580)
+('Music Videos', 1)
+
+Q12: -- Provide a query that shows the count of customers
+      assigned to each sales agent.
+
+
+    SELECT e.FirstName||" "||e.LastName as "Sales Agent", 
+       COUNT(c.SupportRepId) as "Customer Count"
+    FROM Employees e
+    JOIN Customers c
+    ON c.SupportRepId = e.EmployeeId
+    GROUP BY e.EmployeeId;
+
+     Sales Agent  Customer Count
+0   Jane Peacock              21
+1  Margaret Park              20
+2  Steve Johnson              18
+
+
+     Sales Agent  Customer Count
+0   Jane Peacock              21
+1  Margaret Park              20
+2  Steve Johnson              18
+['Sales Agent', 'Customer Count']
+('Jane Peacock', 21)
+('Margaret Park', 20)
+('Steve Johnson', 18)
+
+Q13: -- Provide a query that includes
+       the purchased track name AND artist name
+       with each invoice line item.
+       (for reduce the output:
+          WHERE i.TrackId < 10 was added).
+
+    SELECT InvoiceLineId, t.Name as "Song", 
+           ar.Name as "Artist"
+    FROM Invoice_items i 
+    JOIN Tracks t
+    ON t.TrackId = i.TrackId
+    JOIN Albums a 
+    ON a.AlbumId = t.AlbumId
+    JOIN Artists ar 
+    ON ar.ArtistId = a.ArtistId
+    WHERE i.TrackId < 10
+    ORDER BY t.TrackId;
+
+    InvoiceLineId                                     Song  Artist
+0             579  For Those About To Rock (We Salute You)   AC/DC
+1               1                        Balls to the Wall  Accept
+2            1154                        Balls to the Wall  Accept
+3            1728                          Fast As a Shark  Accept
+4               2                        Restless and Wild  Accept
+5             580                     Princess of the Dawn  Accept
+6               3                    Put The Finger On You   AC/DC
+7               4                         Inject The Venom   AC/DC
+8            1155                         Inject The Venom   AC/DC
+9             581                               Snowballed   AC/DC
+10           1729                               Snowballed   AC/DC
+
+
+    InvoiceLineId                                     Song  Artist
+0             579  For Those About To Rock (We Salute You)   AC/DC
+1               1                        Balls to the Wall  Accept
+2            1154                        Balls to the Wall  Accept
+3            1728                          Fast As a Shark  Accept
+4               2                        Restless and Wild  Accept
+5             580                     Princess of the Dawn  Accept
+6               3                    Put The Finger On You   AC/DC
+7               4                         Inject The Venom   AC/DC
+8            1155                         Inject The Venom   AC/DC
+9             581                               Snowballed   AC/DC
+10           1729                               Snowballed   AC/DC
+['InvoiceLineId', 'Song', 'Artist']
+(579, 'For Those About To Rock (We Salute You)', 'AC/DC')
+(1, 'Balls to the Wall', 'Accept')
+(1154, 'Balls to the Wall', 'Accept')
+(1728, 'Fast As a Shark', 'Accept')
+(2, 'Restless and Wild', 'Accept')
+(580, 'Princess of the Dawn', 'Accept')
+(3, 'Put The Finger On You', 'AC/DC')
+(4, 'Inject The Venom', 'AC/DC')
+(1155, 'Inject The Venom', 'AC/DC')
+(581, 'Snowballed', 'AC/DC')
+
+Q14 + Q15 + Q16:
+ -- What are the respective total sales
+    for each of those years? (2009,2010,2011)
+
+
+    SELECT SUM(Total) as "Total Sales"
+    FROM invoices
+    WHERE InvoiceDate 
+            between "2009-01-01" AND "2010-01-01";
+   Total Sales
+0       449.46
+
+
+   Total Sales
+0       449.46
+['Total Sales']
+(449.4600000000003,)
+
+    SELECT SUM(Total) as "Total Sales"
+    FROM invoices
+    WHERE InvoiceDate 
+            between "2010-01-01" AND "2011-01-01";
+   Total Sales
+0       481.45
+
+
+   Total Sales
+0       481.45
+['Total Sales']
+(481.45000000000033,)
+
+    SELECT SUM(Total) as "Total Sales"
+    FROM invoices
+    WHERE InvoiceDate 
+            between "2011-01-01" AND "2012-01-01";
+   Total Sales
+0       469.58
+
+
+   Total Sales
+0       469.58
+['Total Sales']
+(469.5800000000003,)
