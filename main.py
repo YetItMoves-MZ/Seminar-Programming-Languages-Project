@@ -36,30 +36,28 @@ def reset():
 
 # connect to the database
 createCsvFromDb.main()
-root = tk.Tk()
+#   root = tk.Tk()
 
-tree = ttk.Treeview(root, column=("c1", "c2", "c3"), show='headings')
+#   tree = ttk.Treeview(root, column=("c1", "c2", "c3", "c4", "c5"), show='headings')
+#   tree.column("#1", anchor=tk.CENTER)
+#   tree.heading("#1", text="ID")
+#   tree.column("#2", anchor=tk.CENTER)
+#   tree.heading("#2", text="FNAME")
+#   tree.column("#3", anchor=tk.CENTER)
+#   tree.heading("#3", text="LNAME")
+#   tree.pack()
 
-tree.column("#1", anchor=tk.CENTER)
+tk = tk.Tk()
+gui = treeFunctions.GUI(tk)
+gui.add_columns(["ID","FNAME","LNAME"])
+tk.mainloop()
 
-tree.heading("#1", text="ID")
+#button1 = tk.Button(text="Clear Data", command=reset)
+#button1.pack(pady=10)
+#
+#listbox = tk.Listbox(root)
+#listbox.pack(pady=20)
+#populate_box(listbox)
+#listbox.bind('<<ListboxSelect>>', click_event)
 
-tree.column("#2", anchor=tk.CENTER)
-
-tree.heading("#2", text="FNAME")
-
-tree.column("#3", anchor=tk.CENTER)
-
-tree.heading("#3", text="LNAME")
-
-tree.pack()
-
-button1 = tk.Button(text="Clear Data", command=reset)
-button1.pack(pady=10)
-
-listbox = tk.Listbox(root)
-listbox.pack(pady=20)
-populate_box(listbox)
-listbox.bind('<<ListboxSelect>>', click_event)
-
-root.mainloop()
+#root.mainloop()
