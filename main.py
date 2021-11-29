@@ -1,7 +1,6 @@
 from tkinter import ttk
 
 import treeFunctions
-import gui
 import tkinter as tk
 
 import sqlite3
@@ -37,29 +36,27 @@ def reset():
 
 # connect to the database
 createCsvFromDb.main()
-#   root = tk.Tk()
+root = tk.Tk()
 
-#   tree = ttk.Treeview(root, column=("c1", "c2", "c3", "c4", "c5"), show='headings')
-#   tree.column("#1", anchor=tk.CENTER)
-#   tree.heading("#1", text="ID")
-#   tree.column("#2", anchor=tk.CENTER)
-#   tree.heading("#2", text="FNAME")
-#   tree.column("#3", anchor=tk.CENTER)
-#   tree.heading("#3", text="LNAME")
-#   tree.pack()
+tree = ttk.Treeview(root, column=("ID", "FNAME", "LNAME"), show='headings')
+tree.column("#1", anchor=tk.CENTER)
+tree.heading("#1", text="ID")
+tree.column("#2", anchor=tk.CENTER)
+tree.heading("#2", text="FNAME")
+tree.column("#3", anchor=tk.CENTER)
+tree.heading("#3", text="LNAME")
+tree.pack()
 
-tk = tk.Tk()
-gui = gui.GUI(tk)
-gui.add_columns(["ID","FNAME","LNAME"])
-gui.remove_columns(["blesh"])
-tk.mainloop()
 
-#button1 = tk.Button(text="Clear Data", command=reset)
-#button1.pack(pady=10)
-#
-#listbox = tk.Listbox(root)
-#listbox.pack(pady=20)
-#populate_box(listbox)
-#listbox.bind('<<ListboxSelect>>', click_event)
+treeFunctions.add_columns(tree, ["ID2", "FNAME2", "LNAME2"])
+treeFunctions.remove_columns(tree, ["ID"])
 
-#root.mainloop()
+button1 = tk.Button(text="Clear Data", command=reset)
+button1.pack(pady=10)
+
+listbox = tk.Listbox(root)
+listbox.pack(pady=20)
+populate_box(listbox)
+listbox.bind('<<ListboxSelect>>', click_event)
+
+root.mainloop()
