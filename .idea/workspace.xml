@@ -4,8 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="66dd48ef-c742-42df-b7ae-07c2824f96ab" name="Changes" comment="added clear table function">
-      <change afterPath="$PROJECT_DIR$/gui.py" afterDir="false" />
+    <list default="true" id="66dd48ef-c742-42df-b7ae-07c2824f96ab" name="Changes" comment="added gui">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gui.py" beforeDir="false" afterPath="$PROJECT_DIR$/gui.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/treeFunctions.py" beforeDir="false" afterPath="$PROJECT_DIR$/treeFunctions.py" afterDir="false" />
     </list>
@@ -151,7 +152,21 @@
       <option name="project" value="LOCAL" />
       <updated>1636971999297</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="added gui">
+      <created>1638179540985</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1638179540985</updated>
+    </task>
+    <task id="LOCAL-00005" summary="added gui">
+      <created>1638179559340</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1638179559340</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -170,6 +185,7 @@
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <MESSAGE value="test" />
     <MESSAGE value="added clear table function" />
-    <option name="LAST_COMMIT_MESSAGE" value="added clear table function" />
+    <MESSAGE value="added gui" />
+    <option name="LAST_COMMIT_MESSAGE" value="added gui" />
   </component>
 </project>

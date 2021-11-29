@@ -1,6 +1,7 @@
 from tkinter import ttk
 
 import treeFunctions
+import gui
 import tkinter as tk
 
 import sqlite3
@@ -48,8 +49,9 @@ createCsvFromDb.main()
 #   tree.pack()
 
 tk = tk.Tk()
-gui = treeFunctions.GUI(tk)
+gui = gui.GUI(tk)
 gui.add_columns(["ID","FNAME","LNAME"])
+gui.remove_columns(["blesh"])
 tk.mainloop()
 
 #button1 = tk.Button(text="Clear Data", command=reset)

@@ -28,10 +28,8 @@ class GUI:
             # State is not valid to set with heading
             state = current_columns[key].pop('state')
             self.view.heading(key, **current_columns[key])
-
-    def remove_columns(self, columns, **kwargs):
-        # Preserve current column headers and their settings
-        current_columns = list(self.view['columns'])
-        current_columns = {key: self.view.heading(key) for key in current_columns}
+        
+        
+        
 
 
