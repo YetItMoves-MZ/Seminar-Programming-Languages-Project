@@ -30,24 +30,24 @@ def populate_box(mylistbox):
         mylistbox.insert("end", i)
 
 
-def reset():
-    treeFunctions.clear_tree(tree)
+# def reset():
+#     treeFunctions.clear_tree(tree)
 
 
 # connect to the database
-createCsvFromDb.main()
-root = tk.Tk()
-
-tree = ttk.Treeview(root, column=(), show='headings')
-tree.pack()
-
-
-button1 = tk.Button(text="Clear Data", command=reset)
-button1.pack(pady=10)
-
-listbox = tk.Listbox(root)
-listbox.pack(pady=20)
-populate_box(listbox)
-listbox.bind('<<ListboxSelect>>', click_event)
-
-root.mainloop()
+#createCsvFromDb.main()
+    # root = tk.Tk()
+    #
+    # tree = ttk.Treeview(root, column=(), show='headings')
+    # tree.pack()
+    #
+    #
+    # button1 = tk.Button(text="Clear Data", command=reset)
+    # button1.pack(pady=10)
+    #
+    # listbox = tk.Listbox(root)
+    # listbox.pack(pady=20)
+    # populate_box(listbox)
+    # listbox.bind('<<ListboxSelect>>', click_event)
+    #
+    # root.mainloop()

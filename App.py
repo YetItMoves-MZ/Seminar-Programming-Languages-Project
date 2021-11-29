@@ -1,11 +1,50 @@
+import sqlite3
 import tkinter as tk
 import tkinter.font as tkFont
+from tkinter import ttk
+
+import csv
+
+from pandas import read_csv
+
+import createCsvFromDb
+import treeFunctions
+
+tables_list = ['albums', 'artists', 'customers', 'employees',
+               'genres', 'invoice_items', 'invoices', 'media_types',
+               'playlist_track', 'playlists', 'sqlite_sequence',
+               'sqlite_stat1', 'tracks']
+
+
+def click_event(event):
+    treeFunctions.clear_tree(tree)
+    con1 = sqlite3.connect('chinook.db')
+    cur1 = con1.cursor()
+    table_name = app.get_listbox().get(app.get_listbox().curselection())
+    f = open(f"{table_name}.csv", newline='')
+    csv_reader = csv.reader(f)
+    headers = next(csv_reader)
+    cur1.execute(f"SELECT * FROM {table_name}")
+    rows = cur1.fetchall()
+
+
+    for row in rows:
+        tree.insert("", tk.END, values=row)
+
+    con1.close()
+
+
+
+def populate_box(mylistbox,list):
+    for i in list:
+        mylistbox.insert("end", i)
+
 
 class App:
     def __init__(self, root):
-        #setting title
+        # setting title
         root.title("Seminar Project")
-        #setting window size
+        # setting window size
         width=600
         height=500
         screenwidth = root.winfo_screenwidth()
@@ -22,13 +61,14 @@ class App:
         GLabel_682["text"] = "Display"
         GLabel_682.place(x=0,y=0,width=599,height=20)
 
-        GListBox_280=tk.Listbox(root)
-        GListBox_280["borderwidth"] = "1px"
+        self.GListBox_280 = tk.Listbox(root)
+        self.GListBox_280["borderwidth"] = "1px"
         ft = tkFont.Font(family='Times',size=10)
-        GListBox_280["font"] = ft
-        GListBox_280["fg"] = "#333333"
-        GListBox_280["justify"] = "center"
-        GListBox_280.place(x=0,y=260,width=181,height=234)
+        self.GListBox_280["font"] = ft
+        self.GListBox_280["fg"] = "#333333"
+        self.GListBox_280["justify"] = "center"
+        self.GListBox_280.place(x=0,y=260,width=181,height=234)
+        populate_box(self.GListBox_280, tables_list)
 
         GListBox_487=tk.Listbox(root)
         GListBox_487["borderwidth"] = "1px"
@@ -137,10 +177,19 @@ class App:
         GButton_243.place(x=280,y=450,width=70,height=25)
         GButton_243["command"] = self.GButton_243_command
 
+    def get_listbox(self):
+        return self.GListBox_280
+
     def GButton_243_command(self):
         print("command")
 
+
 if __name__ == "__main__":
+    createCsvFromDb.main()
     root = tk.Tk()
     app = App(root)
+    tree = ttk.Treeview(root, column=(), show='headings')
+    tree.pack()
+    treeFunctions.add_columns(tree, ['c1', 'c2', 'c3', 'c4'])
+    app.get_listbox().bind('<<ListboxSelect>>', click_event)
     root.mainloop()
