@@ -1,0 +1,11 @@
+index,name,seq
+0,genres,25
+1,media_types,5
+2,artists,275
+3,albums,347
+4,tracks,3503
+5,employees,8
+6,customers,59
+7,invoices,412
+8,invoice_items,2240
+9,playlists,18

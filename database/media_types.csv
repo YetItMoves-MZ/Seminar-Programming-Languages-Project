@@ -1,0 +1,6 @@
+index,MediaTypeId,Name
+0,1,MPEG audio file
+1,2,Protected AAC audio file
+2,3,Protected MPEG-4 video file
+3,4,Purchased AAC audio file
+4,5,AAC audio file

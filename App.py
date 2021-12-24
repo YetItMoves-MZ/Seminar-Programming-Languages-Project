@@ -5,40 +5,38 @@ from tkinter import ttk
 
 import csv
 
-from pandas import read_csv
-
 import createCsvFromDb
 import treeFunctions
 
-tables_list = ['albums', 'artists', 'customers', 'employees',
-               'genres', 'invoice_items', 'invoices', 'media_types',
-               'playlist_track', 'playlists', 'sqlite_sequence',
-               'sqlite_stat1', 'tracks']
+import sys
+
+root = None
+tree_view = None
+tables_list = None
 
 
 def click_event(event):
-    treeFunctions.clear_tree(tree)
-    con1 = sqlite3.connect('chinook.db')
-    cur1 = con1.cursor()
+    treeFunctions.clear_tree(tree_view)
+    treeFunctions.remove_columns(tree_view, tree_view['columns'])
     table_name = app.get_listbox().get(app.get_listbox().curselection())
-    f = open(f"{table_name}.csv", newline='')
-    csv_reader = csv.reader(f)
-    headers = next(csv_reader)
-    cur1.execute(f"SELECT * FROM {table_name}")
-    rows = cur1.fetchall()
+
+    columns_names = createCsvFromDb.extract_table_column_names(table_name)
+    entries = createCsvFromDb.extract_entries_from_table(table_name)
+
+    treeFunctions.add_columns(tree_view, columns_names)
+    for row in entries:
+        tree_view.insert("", tk.END, values=row)
+    tree_view.update()
+    cols = tree_view['columns']
+    for col in cols:
+        tree_view.column(col, width=100)  # restore to desired size
 
 
-    for row in rows:
-        tree.insert("", tk.END, values=row)
-
-    con1.close()
 
 
-
-def populate_box(mylistbox,list):
+def populate_box(mylistbox, list):
     for i in list:
         mylistbox.insert("end", i)
-
 
 class App:
     def __init__(self, root):
@@ -184,12 +182,39 @@ class App:
         print("command")
 
 
+def configure_scrollbars():
+    x_scrollbar = tk.Scrollbar(root, orient=tk.HORIZONTAL)
+    x_scrollbar.grid(row=1, column=0, sticky=tk.E + tk.W)
+    y_scrollbar = tk.Scrollbar(root, orient=tk.VERTICAL)
+    y_scrollbar.grid(row=0, column=1, sticky=tk.N + tk.S)
+
+    tree_view.configure(yscrollcommand=y_scrollbar.set)
+    tree_view.configure(xscrollcommand=x_scrollbar.set)
+    tree_view.grid(row=0, column=0, sticky=tk.N + tk.S + tk.E + tk.W)
+
+    for col in tree_view['columns']:
+        tree_view.heading(col, text=f"{col}", anchor=tk.CENTER)
+        tree_view.column(col, anchor=tk.CENTER, width=40)  # initially smaller size
+    tree_view.update()
+    for col in tree_view['columns']:
+        tree_view.column(col, width=100)  # restore to desired size
+
+    x_scrollbar['command'] = tree_view.xview
+    y_scrollbar['command'] = tree_view.yview
+
 if __name__ == "__main__":
     createCsvFromDb.main()
+
+    max_num_columns = createCsvFromDb.extract_max_columns()
+    tables_list = createCsvFromDb.extract_table_names()
+    columns = ["" for i in range(max_num_columns)]
+
     root = tk.Tk()
     app = App(root)
-    tree = ttk.Treeview(root, column=(), show='headings')
-    tree.pack()
-    treeFunctions.add_columns(tree, ['c1', 'c2', 'c3', 'c4'])
+    tree_view = ttk.Treeview(root, columns=(), show='headings', selectmode='browse')
+
+    configure_scrollbars()
+
+    treeFunctions.add_columns(tree_view, columns)
     app.get_listbox().bind('<<ListboxSelect>>', click_event)
     root.mainloop()

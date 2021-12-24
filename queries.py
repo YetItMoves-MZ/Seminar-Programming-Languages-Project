@@ -274,6 +274,6 @@ def display_with_engine(results, Q, cur, conn, engine):
          break
 
 def main():
-    sys.stdout = open("queriesOutput.txt", 'w', encoding="utf-8")
+    sys.stdout = open("database/queriesOutput.txt", 'w', encoding="utf-8")
     Queries('chinook.db')
     sys.stdout.close()

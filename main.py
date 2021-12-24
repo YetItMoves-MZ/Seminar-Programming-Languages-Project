@@ -1,16 +1,12 @@
-from tkinter import ttk
-
 import treeFunctions
 import tkinter as tk
 
 import sqlite3
 
-import createCsvFromDb
-
 
 def click_event(event):
     treeFunctions.clear_tree(tree)
-    con1 = sqlite3.connect('chinook.db')
+    con1 = sqlite3.connect('database/chinook.db')
     cur1 = con1.cursor()
     cur1.execute(f"SELECT * FROM {listbox.get(listbox.curselection())}")
     rows = cur1.fetchall()

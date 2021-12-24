@@ -4,10 +4,35 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="165573d3-0f61-444e-a8a8-c2fa7bbbff05" name="Changes" comment="removed gui.py added add and remove column functions to treeFunctions.py">
+    <list default="true" id="165573d3-0f61-444e-a8a8-c2fa7bbbff05" name="Changes" comment="Implement App with displaying tables">
+      <change beforePath="$PROJECT_DIR$/.idea/seminarProgrammingLanguagesProject.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/seminarProgrammingLanguagesProject.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/App.py" beforeDir="false" afterPath="$PROJECT_DIR$/App.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Chinook sample database tables.docx" beforeDir="false" afterPath="$PROJECT_DIR$/database/Chinook sample database tables.docx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CreateCsvFromDBoutput.txt" beforeDir="false" afterPath="$PROJECT_DIR$/database/CreateCsvFromDBoutput.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/albums.csv" beforeDir="false" afterPath="$PROJECT_DIR$/database/albums.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/artists.csv" beforeDir="false" afterPath="$PROJECT_DIR$/database/artists.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/chinook.db" beforeDir="false" afterPath="$PROJECT_DIR$/database/chinook.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contacts.db" beforeDir="false" afterPath="$PROJECT_DIR$/database/contacts.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/createCsvFromDb.py" beforeDir="false" afterPath="$PROJECT_DIR$/database/createCsvFromDb.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/customers.csv" beforeDir="false" afterPath="$PROJECT_DIR$/database/customers.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/employees.csv" beforeDir="false" afterPath="$PROJECT_DIR$/database/employees.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/genres.csv" beforeDir="false" afterPath="$PROJECT_DIR$/database/genres.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/invoice_items.csv" beforeDir="false" afterPath="$PROJECT_DIR$/database/invoice_items.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/invoices.csv" beforeDir="false" afterPath="$PROJECT_DIR$/database/invoices.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/media_types.csv" beforeDir="false" afterPath="$PROJECT_DIR$/database/media_types.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/playlist_track.csv" beforeDir="false" afterPath="$PROJECT_DIR$/database/playlist_track.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/playlists.csv" beforeDir="false" afterPath="$PROJECT_DIR$/database/playlists.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/queries.py" beforeDir="false" afterPath="$PROJECT_DIR$/queries.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/queriesOutput.txt" beforeDir="false" afterPath="$PROJECT_DIR$/database/queriesOutput.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/questions.docx" beforeDir="false" afterPath="$PROJECT_DIR$/database/questions.docx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/questionsANDanswers.docx" beforeDir="false" afterPath="$PROJECT_DIR$/database/questionsANDanswers.docx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sqlite-sample-database-diagram-color.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/database/sqlite-sample-database-diagram-color.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sqlite-sample-database-diagram.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/database/sqlite-sample-database-diagram.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sqlite_sequence.csv" beforeDir="false" afterPath="$PROJECT_DIR$/database/sqlite_sequence.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sqlite_stat1.csv" beforeDir="false" afterPath="$PROJECT_DIR$/database/sqlite_stat1.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tracks.csv" beforeDir="false" afterPath="$PROJECT_DIR$/database/tracks.csv" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -47,6 +72,8 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Ben\PycharmProjects\seminarProgrammingLanguagesProject\database" />
+      <recent name="C:\Users\Ben\PycharmProjects\seminarProgrammingLanguagesProject" />
       <recent name="C:\Users\matan\PycharmProjects\seminarProgrammingLanguagesProject\venv" />
     </key>
   </component>
@@ -64,6 +91,27 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/App.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="class" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="seminarProgrammingLanguagesProject" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/class.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -105,7 +153,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/createCsvFromDb.py" />
+      <option name="SCRIPT_NAME" value="C:\Users\Ben\PycharmProjects\seminarProgrammingLanguagesProject\database\createCsvFromDb.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -135,9 +183,32 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="testing" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="seminarProgrammingLanguagesProject" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/testing.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
         <item itemvalue="Python.App" />
+        <item itemvalue="Python.class" />
+        <item itemvalue="Python.testing" />
         <item itemvalue="Python.createCsvFromDb" />
         <item itemvalue="Python.createCsvFromDb (1)" />
       </list>
@@ -146,7 +217,7 @@
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="66dd48ef-c742-42df-b7ae-07c2824f96ab" name="Changes" comment="" />
+      <changelist id="165573d3-0f61-444e-a8a8-c2fa7bbbff05" name="Changes" comment="Implement App with displaying tables" />
       <created>1636459900312</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
@@ -201,7 +272,14 @@
       <option name="project" value="LOCAL" />
       <updated>1638182966333</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="Implement App with displaying tables">
+      <created>1638190902672</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1638190902672</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -223,20 +301,46 @@
     <MESSAGE value="added gui" />
     <MESSAGE value="changed location for the remove columns function" />
     <MESSAGE value="removed gui.py added add and remove column functions to treeFunctions.py" />
-    <option name="LAST_COMMIT_MESSAGE" value="removed gui.py added add and remove column functions to treeFunctions.py" />
+    <MESSAGE value="Implement App with displaying tables" />
+    <option name="LAST_COMMIT_MESSAGE" value="Implement App with displaying tables" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/App.py</url>
-          <line>19</line>
-          <option name="timeStamp" value="6" />
+          <url>file://$PROJECT_DIR$/class.py</url>
+          <line>40</line>
+          <option name="timeStamp" value="8" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/class.py</url>
+          <line>44</line>
+          <option name="timeStamp" value="10" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/class.py</url>
+          <line>27</line>
+          <option name="timeStamp" value="11" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/class.py</url>
+          <line>57</line>
+          <option name="timeStamp" value="12" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/App.py</url>
-          <line>27</line>
-          <option name="timeStamp" value="7" />
+          <line>18</line>
+          <option name="timeStamp" value="13" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/App.py</url>
+          <line>205</line>
+          <option name="timeStamp" value="14" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/database/createCsvFromDb.py</url>
+          <line>72</line>
+          <option name="timeStamp" value="19" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
