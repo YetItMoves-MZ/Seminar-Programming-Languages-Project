@@ -13,30 +13,8 @@ import sys
 root = None
 tree_view = None
 tables_list = None
+app = None
 
-
-def click_event(event):
-    treeFunctions.clear_tree(tree_view)
-    treeFunctions.remove_columns(tree_view, tree_view['columns'])
-    table_name = app.get_listbox().get(app.get_listbox().curselection())
-
-    columns_names = createCsvFromDb.extract_table_column_names(table_name)
-    entries = createCsvFromDb.extract_entries_from_table(table_name)
-
-    treeFunctions.add_columns(tree_view, columns_names)
-    for row in entries:
-        tree_view.insert("", tk.END, values=row)
-    tree_view.update()
-    cols = tree_view['columns']
-    for col in cols:
-        tree_view.column(col, width=100)  # restore to desired size
-
-
-
-
-def populate_box(mylistbox, list):
-    for i in list:
-        mylistbox.insert("end", i)
 
 class App:
     def __init__(self, root):
@@ -51,146 +29,195 @@ class App:
         root.geometry(alignstr)
         root.resizable(width=False, height=False)
 
-        GLabel_682=tk.Label(root)
-        ft = tkFont.Font(family='Times',size=10)
-        GLabel_682["font"] = ft
-        GLabel_682["fg"] = "#333333"
-        GLabel_682["justify"] = "center"
-        GLabel_682["text"] = "Display"
-        GLabel_682.place(x=0,y=0,width=599,height=20)
 
-        self.GListBox_280 = tk.Listbox(root)
-        self.GListBox_280["borderwidth"] = "1px"
-        ft = tkFont.Font(family='Times',size=10)
-        self.GListBox_280["font"] = ft
-        self.GListBox_280["fg"] = "#333333"
-        self.GListBox_280["justify"] = "center"
-        self.GListBox_280.place(x=0,y=260,width=181,height=234)
-        populate_box(self.GListBox_280, tables_list)
+        """
+        key is query, value is another dict containing columns and entries
+        example output would be:
+        self.output_queries = {
+            "SELECT * FROM customer WHERE STATE==Canada":  {
+                    "column_names" = [.....],
+                    "entries" = [....]
+                },
+            ....        
+        }
+        """
 
-        GListBox_487=tk.Listbox(root)
-        GListBox_487["borderwidth"] = "1px"
-        ft = tkFont.Font(family='Times',size=10)
-        GListBox_487["font"] = ft
-        GListBox_487["fg"] = "#333333"
-        GListBox_487["justify"] = "center"
-        GListBox_487.place(x=418,y=260,width=181,height=234)
+        self.output_queries = {}
 
-        GLabel_16=tk.Label(root)
-        ft = tkFont.Font(family='Times',size=10)
-        GLabel_16["font"] = ft
-        GLabel_16["fg"] = "#333333"
-        GLabel_16["justify"] = "center"
-        GLabel_16["text"] = "Tables List"
-        GLabel_16.place(x=0,y=230,width=181,height=30)
+        self.selected_table_name = None
 
-        GLabel_530=tk.Label(root)
+        self.table_list = tk.Listbox(root)
+        self.table_list["borderwidth"] = "1px"
         ft = tkFont.Font(family='Times',size=10)
-        GLabel_530["font"] = ft
-        GLabel_530["fg"] = "#333333"
-        GLabel_530["justify"] = "center"
-        GLabel_530["text"] = "Tables After Operations"
-        GLabel_530.place(x=418,y=230,width=181,height=30)
+        self.table_list["font"] = ft
+        self.table_list["fg"] = "#333333"
+        self.table_list["justify"] = "center"
+        self.table_list.place(x=0, y=260, width=181, height=234)
+        self.table_list.bind('<<ListboxSelect>>', self.table_list_select_click)
 
-        GLabel_364=tk.Label(root)
-        ft = tkFont.Font(family='Times',size=10)
-        GLabel_364["font"] = ft
-        GLabel_364["fg"] = "#333333"
-        GLabel_364["justify"] = "center"
-        GLabel_364["text"] = "SELECT"
-        GLabel_364.place(x=190,y=260,width=80,height=30)
+        self.populate_box(self.table_list, tables_list)
 
-        GListBox_935=tk.Listbox(root)
-        GListBox_935["borderwidth"] = "1px"
-        ft = tkFont.Font(family='Times',size=10)
-        GListBox_935["font"] = ft
-        GListBox_935["fg"] = "#333333"
-        GListBox_935["justify"] = "center"
-        GListBox_935.place(x=280,y=260,width=80,height=30)
 
-        GLabel_490=tk.Label(root)
-        ft = tkFont.Font(family='Times',size=10)
-        GLabel_490["font"] = ft
-        GLabel_490["fg"] = "#333333"
-        GLabel_490["justify"] = "center"
-        GLabel_490["text"] = "FROM"
-        GLabel_490.place(x=190,y=310,width=80,height=30)
 
-        GListBox_847=tk.Listbox(root)
-        GListBox_847["borderwidth"] = "1px"
+        table_lists_label=tk.Label(root)
         ft = tkFont.Font(family='Times',size=10)
-        GListBox_847["font"] = ft
-        GListBox_847["fg"] = "#333333"
-        GListBox_847["justify"] = "center"
-        GListBox_847.place(x=280,y=310,width=80,height=30)
+        table_lists_label["font"] = ft
+        table_lists_label["fg"] = "#333333"
+        table_lists_label["justify"] = "center"
+        table_lists_label["text"] = "Tables List"
+        table_lists_label.place(x=0,y=235,width=181,height=30)
 
-        GLabel_161=tk.Label(root)
+        tables_after_operations_label = tk.Label(root)
         ft = tkFont.Font(family='Times',size=10)
-        GLabel_161["font"] = ft
-        GLabel_161["fg"] = "#333333"
-        GLabel_161["justify"] = "center"
-        GLabel_161["text"] = "OPERATION"
-        GLabel_161.place(x=190,y=360,width=80,height=30)
+        tables_after_operations_label["font"] = ft
+        tables_after_operations_label["fg"] = "#333333"
+        tables_after_operations_label["justify"] = "center"
+        tables_after_operations_label["text"] = "Tables After Operations"
+        tables_after_operations_label.place(x=418,y=235,width=181,height=30)
+        
+        tables_after_operations_list=tk.Listbox(root)
+        tables_after_operations_list["borderwidth"] = "1px"
+        ft = tkFont.Font(family='Times',size=10)
+        tables_after_operations_list["font"] = ft
+        tables_after_operations_list["fg"] = "#333333"
+        tables_after_operations_list["justify"] = "center"
+        tables_after_operations_list.place(x=418,y=260,width=181,height=234)
 
-        GListBox_907=tk.Listbox(root)
-        GListBox_907["borderwidth"] = "1px"
+        select_label=tk.Label(root)
         ft = tkFont.Font(family='Times',size=10)
-        GListBox_907["font"] = ft
-        GListBox_907["fg"] = "#333333"
-        GListBox_907["justify"] = "center"
-        GListBox_907.place(x=280,y=360,width=80,height=30)
+        select_label["font"] = ft
+        select_label["fg"] = "#333333"
+        select_label["justify"] = "center"
+        select_label["text"] = "SELECT"
+        select_label.place(x=190,y=260,width=100,height=30)
 
-        GListBox_713=tk.Listbox(root)
-        GListBox_713["borderwidth"] = "1px"
+        self.select_text = tk.Text(root)
+        self.select_text["borderwidth"] = "1px"
         ft = tkFont.Font(family='Times',size=10)
-        GListBox_713["font"] = ft
-        GListBox_713["fg"] = "#333333"
-        GListBox_713["justify"] = "center"
-        GListBox_713.place(x=210,y=400,width=60,height=25)
+        self.select_text["font"] = ft
+        self.select_text["fg"] = "#333333"
+        self.select_text.place(x=280,y=260,width=100,height=30)
 
-        GListBox_421=tk.Listbox(root)
-        GListBox_421["borderwidth"] = "1px"
+        from_label = tk.Label(root)
         ft = tkFont.Font(family='Times',size=10)
-        GListBox_421["font"] = ft
-        GListBox_421["fg"] = "#333333"
-        GListBox_421["justify"] = "center"
-        GListBox_421.place(x=280,y=400,width=60,height=25)
+        from_label["font"] = ft
+        from_label["fg"] = "#333333"
+        from_label["justify"] = "center"
+        from_label["text"] = "FROM"
+        from_label.place(x=190,y=310,width=100,height=30)
 
-        GLineEdit_799=tk.Entry(root)
-        GLineEdit_799["borderwidth"] = "1px"
-        ft = tkFont.Font(family='Times',size=10)
-        GLineEdit_799["font"] = ft
-        GLineEdit_799["fg"] = "#333333"
-        GLineEdit_799["justify"] = "center"
-        GLineEdit_799["text"] = "Entry"
-        GLineEdit_799.place(x=350,y=400,width=60,height=25)
+        self.from_table_text = tk.StringVar()
+        self.from_table_text.set("")
 
-        GButton_243=tk.Button(root)
-        GButton_243["bg"] = "#e9e9ed"
+        self.from_table_label = tk.Label(root, textvariable=self.from_table_text)
+        self.from_table_label["borderwidth"] = "1px"
         ft = tkFont.Font(family='Times',size=10)
-        GButton_243["font"] = ft
-        GButton_243["fg"] = "#000000"
-        GButton_243["justify"] = "center"
-        GButton_243["text"] = "Execute"
-        GButton_243.place(x=280,y=450,width=70,height=25)
-        GButton_243["command"] = self.GButton_243_command
+        self.from_table_label["font"] = ft
+        self.from_table_label["fg"] = "#333333"
+        from_label["justify"] = "center"
+        self.from_table_label.place(x=280, y=310, width=100, height=30)
+
+        where_label = tk.Label(root)
+        ft = tkFont.Font(family='Times',size=10)
+        where_label["font"] = ft
+        where_label["fg"] = "#333333"
+        where_label["justify"] = "center"
+        where_label["text"] = "WHERE"
+        where_label.place(x=190,y=360,width=100,height=30)
+
+        self.where_text = tk.Text(root)
+        self.where_text["borderwidth"] = "1px"
+        ft = tkFont.Font(family='Times',size=10)
+        self.where_text["font"] = ft
+        self.where_text["fg"] = "#333333"
+        self.where_text.place(x=280,y=360,width=100,height=80)
+
+        execute_button = tk.Button(root)
+        execute_button["bg"] = "#e9e9ed"
+        ft = tkFont.Font(family='Times',size=10)
+        execute_button["font"] = ft
+        execute_button["fg"] = "#000000"
+        execute_button["justify"] = "center"
+        execute_button["text"] = "Execute"
+        execute_button.place(x=280,y=450,width=70,height=25)
+        execute_button["command"] = self.execute_query
 
     def get_listbox(self):
-        return self.GListBox_280
+        return self.table_list
 
-    def GButton_243_command(self):
-        print("command")
+    def execute_query(self):
+        if self.selected_table_name == "" or self.selected_table_name is None:
+            return
+
+        select_val = self.select_text.get("1.0", tk.END).replace("\n", " ")
+        from_val = self.from_table_text.get()
+        where_val = self.where_text.get("1.0", tk.END).replace("\n", " ")
+
+        if select_val == " " or from_val == "":
+            self.select_text.insert(tk.INSERT, "INVALID")
+            self.where_text.insert(tk.INSERT, "INVALID")
+
+        query_str = f"SELECT {select_val} FROM {from_val}"
+        if where_val != " ":
+            query_str += f" WHERE {where_val}"
+
+
+        #TODO try catch on this method, this would happen probably on invalid query,
+        # in this case we should put invalid query inside select and where text
+        entries = createCsvFromDb.execute_query(from_val, query_str)
+
+        #TODO get the columns of the query into a list
+        columns = []
+
+        # this would override old query
+        self.output_queries[query_str] = {
+            "columns": columns,
+            "entries": entries
+        }
+
+        #TODO add query_str to table operatrions list
+
+        #TODO add when clicked on table operation list, display the query based on what was saved in output_queries
+
+        #TODO add when right clicked on table operation list, remove query from table list and from output queries
+
+
+    def table_list_select_click(self, event):
+        treeFunctions.clear_tree(tree_view)
+        treeFunctions.remove_columns(tree_view, tree_view['columns'])
+        self.selected_table_name = self.table_list.get(self.table_list.curselection())
+
+        # update query from table label
+        self.from_table_text.set(self.selected_table_name)
+
+        columns_names = createCsvFromDb.extract_table_column_names(self.selected_table_name)
+        entries = createCsvFromDb.extract_entries_from_table(self.selected_table_name)
+
+        treeFunctions.add_columns(tree_view, columns_names)
+        for row in entries:
+            tree_view.insert("", tk.END, values=row)
+
+        tree_view.update()
+
+        cols = tree_view['columns']
+        for col in cols:
+            tree_view.column(col, width=100, minwidth=110)  # restore to desired size
+
+    def populate_box(self, mylistbox, list):
+        for i in list:
+            mylistbox.insert("end", i)
 
 
 def configure_scrollbars():
     x_scrollbar = tk.Scrollbar(root, orient=tk.HORIZONTAL)
-    x_scrollbar.grid(row=1, column=0, sticky=tk.E + tk.W)
+    x_scrollbar.pack(side=tk.BOTTOM, fill=tk.X)
+
     y_scrollbar = tk.Scrollbar(root, orient=tk.VERTICAL)
-    y_scrollbar.grid(row=0, column=1, sticky=tk.N + tk.S)
+    y_scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
     tree_view.configure(yscrollcommand=y_scrollbar.set)
     tree_view.configure(xscrollcommand=x_scrollbar.set)
-    tree_view.grid(row=0, column=0, sticky=tk.N + tk.S + tk.E + tk.W)
+    tree_view.pack()
 
     for col in tree_view['columns']:
         tree_view.heading(col, text=f"{col}", anchor=tk.CENTER)
@@ -203,6 +230,7 @@ def configure_scrollbars():
     y_scrollbar['command'] = tree_view.yview
 
 if __name__ == "__main__":
+    createCsvFromDb.csv_from_db_init()
     createCsvFromDb.main()
 
     max_num_columns = createCsvFromDb.extract_max_columns()
@@ -211,10 +239,10 @@ if __name__ == "__main__":
 
     root = tk.Tk()
     app = App(root)
-    tree_view = ttk.Treeview(root, columns=(), show='headings', selectmode='browse')
+    tree_view = ttk.Treeview(root, columns=(), show='headings', selectmode='extended')
 
     configure_scrollbars()
 
     treeFunctions.add_columns(tree_view, columns)
-    app.get_listbox().bind('<<ListboxSelect>>', click_event)
     root.mainloop()
+    createCsvFromDb.csv_from_db_destroy()

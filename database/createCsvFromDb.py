@@ -6,10 +6,21 @@ import sys
 conn = None
 cur = None
 
-def CreateCsvFromDB(db):
+DEFAULT_DATABASE_PATH = 'database/chinook.db'
+
+def csv_from_db_init(db=DEFAULT_DATABASE_PATH):
     global conn, cur
     conn = sqlite3.connect(db)
     cur = conn.cursor()
+
+
+def csv_from_db_destroy():
+    if conn is not None:
+        conn.close()
+    if cur is not None:
+        cur.close()
+
+def CreateCsvFromDB(db=DEFAULT_DATABASE_PATH):
     print("\n" + db +" db Schema")
     cur.execute(\
         "SELECT name "
@@ -113,10 +124,19 @@ def extract_entries_from_table(table_name):
     rows = cur.fetchall()
     return rows
 
+
+def execute_query(table_name, query_str):
+    cur.execute(query_str)
+    results = cur.fetchall()
+    return results
+
+
 def main():
     sys.stdout = open( \
         "database/CreateCsvFromDBoutput.txt", 'w', encoding="utf-8")
-    CreateCsvFromDB('database/chinook.db')
+    CreateCsvFromDB()
     sys.stdout.close()
 
-main()
+
+if __name__ == '__main__':
+    main()

@@ -4,35 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="165573d3-0f61-444e-a8a8-c2fa7bbbff05" name="Changes" comment="Implement App with displaying tables">
-      <change beforePath="$PROJECT_DIR$/.idea/seminarProgrammingLanguagesProject.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/seminarProgrammingLanguagesProject.iml" afterDir="false" />
+    <list default="true" id="165573d3-0f61-444e-a8a8-c2fa7bbbff05" name="Changes" comment="fix tree view, add hori/vert scrollbar, seperate database from gui,&#10;extract database into his on folder&#10;#comment require to set the database directory into source directory">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/App.py" beforeDir="false" afterPath="$PROJECT_DIR$/App.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Chinook sample database tables.docx" beforeDir="false" afterPath="$PROJECT_DIR$/database/Chinook sample database tables.docx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CreateCsvFromDBoutput.txt" beforeDir="false" afterPath="$PROJECT_DIR$/database/CreateCsvFromDBoutput.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/albums.csv" beforeDir="false" afterPath="$PROJECT_DIR$/database/albums.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/artists.csv" beforeDir="false" afterPath="$PROJECT_DIR$/database/artists.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/chinook.db" beforeDir="false" afterPath="$PROJECT_DIR$/database/chinook.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/contacts.db" beforeDir="false" afterPath="$PROJECT_DIR$/database/contacts.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/createCsvFromDb.py" beforeDir="false" afterPath="$PROJECT_DIR$/database/createCsvFromDb.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/customers.csv" beforeDir="false" afterPath="$PROJECT_DIR$/database/customers.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/employees.csv" beforeDir="false" afterPath="$PROJECT_DIR$/database/employees.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/genres.csv" beforeDir="false" afterPath="$PROJECT_DIR$/database/genres.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/invoice_items.csv" beforeDir="false" afterPath="$PROJECT_DIR$/database/invoice_items.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/invoices.csv" beforeDir="false" afterPath="$PROJECT_DIR$/database/invoices.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/media_types.csv" beforeDir="false" afterPath="$PROJECT_DIR$/database/media_types.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/playlist_track.csv" beforeDir="false" afterPath="$PROJECT_DIR$/database/playlist_track.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/playlists.csv" beforeDir="false" afterPath="$PROJECT_DIR$/database/playlists.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/queries.py" beforeDir="false" afterPath="$PROJECT_DIR$/queries.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/queriesOutput.txt" beforeDir="false" afterPath="$PROJECT_DIR$/database/queriesOutput.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/questions.docx" beforeDir="false" afterPath="$PROJECT_DIR$/database/questions.docx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/questionsANDanswers.docx" beforeDir="false" afterPath="$PROJECT_DIR$/database/questionsANDanswers.docx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sqlite-sample-database-diagram-color.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/database/sqlite-sample-database-diagram-color.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sqlite-sample-database-diagram.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/database/sqlite-sample-database-diagram.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sqlite_sequence.csv" beforeDir="false" afterPath="$PROJECT_DIR$/database/sqlite_sequence.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sqlite_stat1.csv" beforeDir="false" afterPath="$PROJECT_DIR$/database/sqlite_stat1.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tracks.csv" beforeDir="false" afterPath="$PROJECT_DIR$/database/tracks.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/createCsvFromDb.py" beforeDir="false" afterPath="$PROJECT_DIR$/database/createCsvFromDb.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -279,7 +254,14 @@
       <option name="project" value="LOCAL" />
       <updated>1638190902672</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="fix tree view, add hori/vert scrollbar, seperate database from gui,&#10;extract database into his on folder&#10;#comment require to set the database directory into source directory">
+      <created>1640340678539</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1640340678539</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -302,7 +284,8 @@
     <MESSAGE value="changed location for the remove columns function" />
     <MESSAGE value="removed gui.py added add and remove column functions to treeFunctions.py" />
     <MESSAGE value="Implement App with displaying tables" />
-    <option name="LAST_COMMIT_MESSAGE" value="Implement App with displaying tables" />
+    <MESSAGE value="fix tree view, add hori/vert scrollbar, seperate database from gui,&#10;extract database into his on folder&#10;#comment require to set the database directory into source directory" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix tree view, add hori/vert scrollbar, seperate database from gui,&#10;extract database into his on folder&#10;#comment require to set the database directory into source directory" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -329,20 +312,15 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/App.py</url>
-          <line>18</line>
-          <option name="timeStamp" value="13" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/App.py</url>
-          <line>205</line>
-          <option name="timeStamp" value="14" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/database/createCsvFromDb.py</url>
-          <line>72</line>
-          <option name="timeStamp" value="19" />
+          <line>148</line>
+          <option name="timeStamp" value="26" />
         </line-breakpoint>
       </breakpoints>
+      <default-breakpoints>
+        <breakpoint type="python-exception">
+          <properties exception="BaseException" />
+        </breakpoint>
+      </default-breakpoints>
     </breakpoint-manager>
   </component>
 </project>
