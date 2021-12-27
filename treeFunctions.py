@@ -22,6 +22,7 @@ def remove_columns(tree, columns, **kwargs):
         state = current_columns[key].pop('state')
         tree.heading(key, **current_columns[key])
 
+
 def add_columns(tree, columns, **kwargs):
     # Preserve current column headers and their settings
     current_columns = list(tree['columns'])

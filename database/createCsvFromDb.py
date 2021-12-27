@@ -32,7 +32,7 @@ def CreateCsvFromDB(db=DEFAULT_DATABASE_PATH):
     for column in tables:
       table_name = column[0]
       print("Table Name: ", table_name)
-      #display_table(cur, conn, table_name)
+      # display_table(cur, conn, table_name)
       cur.execute("PRAGMA table_info(" + table_name + ")")
       info = cur.fetchall()
       print ("   " + table_name + " attributes:")
@@ -54,6 +54,10 @@ def CreateCsvFromDB(db=DEFAULT_DATABASE_PATH):
     display_table(cur, conn, "genres")
     # cur.close()
     # conn.close()
+
+
+def get_cur():
+    return cur
 
 def left_align(df):
     left_aligned_df = \
