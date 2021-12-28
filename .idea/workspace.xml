@@ -4,11 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="165573d3-0f61-444e-a8a8-c2fa7bbbff05" name="Changes" comment="update Gui">
+    <list default="true" id="165573d3-0f61-444e-a8a8-c2fa7bbbff05" name="Changes" comment="fixing crap">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/App.py" beforeDir="false" afterPath="$PROJECT_DIR$/App.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/CreateCsvFromDBoutput.txt" beforeDir="false" afterPath="$PROJECT_DIR$/database/CreateCsvFromDBoutput.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/createCsvFromDb.py" beforeDir="false" afterPath="$PROJECT_DIR$/database/createCsvFromDb.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -276,7 +274,21 @@
       <option name="project" value="LOCAL" />
       <updated>1640615276040</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="fixing crap">
+      <created>1640703608118</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1640703608118</updated>
+    </task>
+    <task id="LOCAL-00013" summary="fixing crap">
+      <created>1640704234098</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1640704234098</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -302,7 +314,8 @@
     <MESSAGE value="fix tree view, add hori/vert scrollbar, seperate database from gui,&#10;extract database into his on folder&#10;#comment require to set the database directory into source directory" />
     <MESSAGE value="update logic" />
     <MESSAGE value="update Gui" />
-    <option name="LAST_COMMIT_MESSAGE" value="update Gui" />
+    <MESSAGE value="fixing crap" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixing crap" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -331,6 +344,21 @@
           <url>file://$PROJECT_DIR$/database/createCsvFromDb.py</url>
           <line>129</line>
           <option name="timeStamp" value="48" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/App.py</url>
+          <line>139</line>
+          <option name="timeStamp" value="51" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/App.py</url>
+          <line>158</line>
+          <option name="timeStamp" value="52" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/App.py</url>
+          <line>143</line>
+          <option name="timeStamp" value="53" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

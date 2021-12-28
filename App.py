@@ -65,17 +65,30 @@ class App:
         self.tables_filter_List["justify"] = "center"
         self.tables_filter_List.place(x=410, y=65, width=170, height=230)
 
-        self.column_label = tk.Label(root)
+        self.column_label = tk.Label(wrapper2)
         self.column_label["font"] = ft
         self.column_label["justify"] = "center"
         self.column_label["text"] = "Column"
-        self.column_label.place(x=175, y=260, width=100, height=30)
+        self.column_label.place(x=175, y=60, width=100, height=30)
 
         self.column_choices = ()
-        self.column_clicked = tk.StringVar(root)
-        self.column_checkbox = tk.OptionMenu(root, self.column_clicked, self.column_choices)
+        self.column_clicked = tk.StringVar(wrapper2)
+        self.column_checkbox = tk.OptionMenu(wrapper2, self.column_clicked, self.column_choices)
         self.column_checkbox["font"] = ft
-        self.column_checkbox.place(x=255, y=260, width=130, height=30)
+        self.column_checkbox.place(x=255, y=60, width=130, height=30)
+
+        self.from_label = tk.Label(wrapper2)
+        self.from_label["font"] = ft
+        self.from_label["justify"] = "center"
+        self.from_label["text"] = "From"
+        self.from_label.place(x=175, y=95, width=100, height=30)
+
+        self.from_table_text = tk.StringVar()
+        self.from_table_text.set("")
+        self.from_table_label = tk.Label(wrapper2, textvariable=self.from_table_text)
+        self.from_table_label["font"] = ft
+        self.from_table_label["justify"] = "center"
+        self.from_table_label.place(x=260, y=95, width=100, height=30)
 
         self.operation_label = tk.Label(wrapper2)
         self.operation_label["font"] = ft
@@ -141,9 +154,27 @@ class App:
         # if not is_valid == type(input_val):
         #     self.error_message_text.insert(tk.INSERT, "Invalid Column and Value Type")
 
+
         # TODO its only working for operators
-        query_str = f"SELECT * FROM {self.selected_table_name} WHERE {column_val} {operation_val}" \
-                    f" '{input_val}'"
+        null_choice = ['IS NULL', 'IS NOT NULL']
+
+        # if operation is null/ is not null
+        if null_choice.__contains__(operation_val):
+            query_str = f"SELECT * FROM {self.selected_table_name} WHERE {column_val} {operation_val}"
+        # if its multiple strings: (brazil,germany,..)
+        elif isinstance(input_val, str) and input_val.__contains__(','):
+            input_val = tuple(input_val.split(','))
+            query_str = f"SELECT * FROM {self.selected_table_name} WHERE {column_val} {operation_val}" \
+                        f" {input_val}"
+        # if its multiple ints: (1,2,3...)
+        elif len(input_val) != 1 and not isinstance(input_val, str):
+            input_val = tuple(input_val.split(','))
+            query_str = f"SELECT * FROM {self.selected_table_name} WHERE {column_val} {operation_val}" \
+                        f" {input_val}"
+        # everything else
+        else:
+            query_str = f"SELECT * FROM {self.selected_table_name} WHERE {column_val} {operation_val}" \
+                        f" ('{input_val}')"
 
         treeFunctions.clear_tree(tree_view)
 
@@ -191,6 +222,8 @@ class App:
 
             for choice in self.operation_choices:
                 self.operation_checkbox['menu'].add_command(label=choice, command=tk._setit(self.operation_clicked, choice))
+
+            self.from_table_text.set(self.selected_table_name)
 
             columns_names = createCsvFromDb.extract_table_column_names(self.selected_table_name)
             entries = createCsvFromDb.extract_entries_from_table(self.selected_table_name)
