@@ -4,11 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="165573d3-0f61-444e-a8a8-c2fa7bbbff05" name="Changes" comment="update logic">
+    <list default="true" id="165573d3-0f61-444e-a8a8-c2fa7bbbff05" name="Changes" comment="update Gui">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/App.py" beforeDir="false" afterPath="$PROJECT_DIR$/App.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/CreateCsvFromDBoutput.txt" beforeDir="false" afterPath="$PROJECT_DIR$/database/CreateCsvFromDBoutput.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/database/createCsvFromDb.py" beforeDir="false" afterPath="$PROJECT_DIR$/database/createCsvFromDb.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/treeFunctions.py" beforeDir="false" afterPath="$PROJECT_DIR$/treeFunctions.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -269,7 +269,14 @@
       <option name="project" value="LOCAL" />
       <updated>1640459730714</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="update Gui">
+      <created>1640615276040</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1640615276040</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -294,7 +301,8 @@
     <MESSAGE value="Implement App with displaying tables" />
     <MESSAGE value="fix tree view, add hori/vert scrollbar, seperate database from gui,&#10;extract database into his on folder&#10;#comment require to set the database directory into source directory" />
     <MESSAGE value="update logic" />
-    <option name="LAST_COMMIT_MESSAGE" value="update logic" />
+    <MESSAGE value="update Gui" />
+    <option name="LAST_COMMIT_MESSAGE" value="update Gui" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -320,9 +328,9 @@
           <option name="timeStamp" value="12" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/App.py</url>
-          <line>162</line>
-          <option name="timeStamp" value="31" />
+          <url>file://$PROJECT_DIR$/database/createCsvFromDb.py</url>
+          <line>129</line>
+          <option name="timeStamp" value="48" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

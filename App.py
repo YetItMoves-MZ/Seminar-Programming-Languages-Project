@@ -44,7 +44,7 @@ class App:
         self.table_list["justify"] = "center"
         self.table_list.place(x=5, y=265, width=170, height=230)
         self.table_list.bind('<<ListboxSelect>>', self.table_list_select_click)
-        self.populate_listbox(self.table_list, tables_list)
+        populate_listbox(self.table_list, tables_list)
 
         self.table_lists_label=tk.Label(root)
         self.table_lists_label["font"] = ft
@@ -63,73 +63,60 @@ class App:
         self.tables_filter_List["justify"] = "center"
         self.tables_filter_List.place(x=410, y=265, width=170, height=230)
 
-        self.select_label = tk.Label(root)
-        self.select_label["font"] = ft
-        self.select_label["justify"] = "center"
-        self.select_label["text"] = "Select"
-        self.select_label.place(x=175, y=260, width=100, height=30)
+        self.column_label = tk.Label(root)
+        self.column_label["font"] = ft
+        self.column_label["justify"] = "center"
+        self.column_label["text"] = "Column"
+        self.column_label.place(x=175, y=260, width=100, height=30)
 
-        self.select_choices = ()
-        self.select_clicked = tk.StringVar(root)
-        self.select_checkbox = tk.OptionMenu(root, self.select_clicked, self.select_choices)
-        self.select_checkbox["font"] = ft
-        self.select_checkbox.place(x=255, y=260, width=130, height=30)
-
-        self.from_label = tk.Label(root)
-        self.from_label["font"] = ft
-        self.from_label["justify"] = "center"
-        self.from_label["text"] = "From"
-        self.from_label.place(x=175, y=295, width=100, height=30)
-
-        self.from_table_text = tk.StringVar()
-        self.from_table_text.set("")
-        self.from_table_label = tk.Label(root, textvariable=self.from_table_text)
-        self.from_table_label["font"] = ft
-        self.from_table_label["justify"] = "center"
-        self.from_table_label.place(x=260, y=295, width=100, height=30)
+        self.column_choices = ()
+        self.column_clicked = tk.StringVar(root)
+        self.column_checkbox = tk.OptionMenu(root, self.column_clicked, self.column_choices)
+        self.column_checkbox["font"] = ft
+        self.column_checkbox.place(x=255, y=260, width=130, height=30)
 
         self.operation_label = tk.Label(root)
         self.operation_label["font"] = ft
         self.operation_label["justify"] = "center"
         self.operation_label["text"] = "Operation"
-        self.operation_label.place(x=175, y=330, width=100, height=30)
+        self.operation_label.place(x=175, y=300, width=100, height=30)
 
         self.operation_choices = ()
         self.operation_clicked = tk.StringVar(root)
         self.operation_checkbox = tk.OptionMenu(root, self.operation_clicked, self.operation_choices)
         self.operation_checkbox["font"] = ft
-        self.operation_checkbox.place(x=255, y=330, width=130, height=30)
+        self.operation_checkbox.place(x=255, y=300, width=130, height=30)
 
         self.value_label = tk.Label(root)
         self.value_label["font"] = ft
         self.value_label["justify"] = "center"
         self.value_label["text"] = "Value"
-        self.value_label.place(x=175, y=380, width=100, height=30)
+        self.value_label.place(x=175, y=340, width=100, height=30)
 
         self.value_text = tk.Text(root)
         self.value_text["font"] = ft
-        self.value_text.place(x=255, y=380, width=130, height=30)
+        self.value_text.place(x=255, y=340, width=130, height=30)
 
         self.case_sensitive_label = tk.Label(root)
         self.case_sensitive_label["font"] = ft
         self.case_sensitive_label["justify"] = "center"
         self.case_sensitive_label["text"] = "Case Sensitive"
-        self.case_sensitive_label.place(x=175, y=430, width=100, height=30)
+        self.case_sensitive_label.place(x=175, y=380, width=100, height=30)
 
         self.case_sensitive_choice = tk.IntVar()
         self.case_sensitive_checkbox = tk.Checkbutton(root, variable=self.case_sensitive_choice, onvalue=1, offvalue=0)
-        self.case_sensitive_checkbox.place(x=270, y=430, width=20, height=30)
+        self.case_sensitive_checkbox.place(x=270, y=380, width=20, height=30)
 
         self.execute_button = tk.Button(root)
         self.execute_button["font"] = ft
         self.execute_button["justify"] = "center"
         self.execute_button["text"] = "Execute"
-        self.execute_button.place(x=315, y=430, width=70, height=25)
+        self.execute_button.place(x=315, y=380, width=70, height=25)
         self.execute_button["command"] = self.execute_query
 
         self.error_message_text = tk.Text(root)
         self.error_message_text["font"] = ft
-        self.error_message_text.place(x=255, y=470, width=130, height=30)
+        self.error_message_text.place(x=255, y=420, width=130, height=30)
 
     def get_listbox(self):
         return self.table_list
@@ -138,76 +125,68 @@ class App:
         if self.selected_table_name == "" or self.selected_table_name is None:
             return
 
-        select_choice = self.select_clicked.get()
-        from_val = self.from_table_text.get()
-        operation_choice = self.operation_clicked.get()
+        column_val = self.column_clicked.get()
+        operation_val = self.operation_clicked.get()
         input_val = self.value_text.get("1.0", tk.END)
+        case_sensitive_val = self.case_sensitive_choice.get()
 
         while input_val.endswith('\n'):
             # Drop last blank line which textbox automatically inserts.
             # User may have manually deleted during edit so don't always assume
             input_val = input_val[:-1]
 
-        if from_val == "":
-            self.error_message_text.insert(tk.INSERT, "Invalid")
+        # is_valid = createCsvFromDb.is_select_match_input(self.selected_table_name, select_choice)
+        # if not is_valid == type(input_val):
+        #     self.error_message_text.insert(tk.INSERT, "Invalid Column and Value Type")
 
-        query_str = f"SELECT {select_choice} FROM {from_val} WHERE {select_choice} {operation_choice}" \
-                    f" {input_val}"
+        # TODO its only working for operators
+        query_str = f"SELECT * FROM {self.selected_table_name} WHERE {column_val} {operation_val}" \
+                    f" '{input_val}'"
 
+        treeFunctions.clear_tree(tree_view)
 
-        #TODO try catch on this method, this would happen probably on invalid query,
-        # in this case we should put invalid query inside select and where text
-        # columns_names = createCsvFromDb.extract_table_column_names(from_val)
-        # cur = createCsvFromDb.get_cur()
-        # cur.execute(query_str)
-        # entries = cur.fetchall()
+        columns_names = createCsvFromDb.extract_table_column_names(self.selected_table_name)
+        treeFunctions.remove_columns(tree_view, columns_names)
+        treeFunctions.add_columns(tree_view, columns_names)
 
-        #TODO get the columns of the query into a list
-        # treeFunctions.remove_columns(tree_view,columns_names)
-        # treeFunctions.add_columns(tree_view, columns_names)
-        #
-        # cols = tree_view['columns']
-        # for col in cols:
-        #     tree_view.column(col, width=100, minwidth=110)  # restore to desired size
-        #TODO add query_str to table operatrions list
+        entries = createCsvFromDb.execute_query(query_str)
+        for row in entries:
+            tree_view.insert("", tk.END, values=row)
+        tree_view.update()
 
-        #TODO add when clicked on table operation list, display the query based on what was saved in output_queries
-
-        #TODO add when right clicked on table operation list, remove query from table list and from output queries
-
-
+        # TODO try catch on this method, this would happen probably on invalid query,
+        # TODO get the columns of the query into a list
+        # TODO add query_str to table operatrions list
+        # TODO add when clicked on table operation list, display the query based on what was saved in output_queries
+        # TODO add when right clicked on table operation list, remove query from table list and from output queries
 
     def refresh(self):
         # Reset var and delete all old options
-        self.select_clicked.set('')
-        self.select_checkbox['menu'].delete(0, 'end')
+        self.column_clicked.set('')
+        self.column_checkbox['menu'].delete(0, 'end')
 
         self.operation_clicked.set('')
         self.operation_checkbox['menu'].delete(0, 'end')
 
-
-
     def table_list_select_click(self, event):
         treeFunctions.clear_tree(tree_view)
         treeFunctions.remove_columns(tree_view, tree_view['columns'])
+
         self.refresh()
         self.selected_table_name = self.table_list.get(self.table_list.curselection())
 
-        self.select_choices = createCsvFromDb.extract_table_column_names(self.selected_table_name)
-        self.select_clicked.set(self.select_choices[0])
+        self.column_choices = createCsvFromDb.extract_table_column_names(self.selected_table_name)
+        self.column_clicked.set(self.column_choices[0])
 
-        for choice in self.select_choices:
-            self.select_checkbox['menu'].add_command(label=choice, command=tk._setit(self.select_clicked, choice))
+        for choice in self.column_choices:
+            self.column_checkbox['menu'].add_command(label=choice, command=tk._setit(self.column_clicked, choice))
 
         self.operation_choices = ('>', '<', '=', '>=', '<=',
-                                  '!=', 'Like', 'In', 'Is Null', 'Is Not Null')
+                                  '!=', 'LIKE', 'IN', 'IS NULL', 'IS NOT NULL')
         self.operation_clicked.set(self.operation_choices[0])
 
         for choice in self.operation_choices:
             self.operation_checkbox['menu'].add_command(label=choice, command=tk._setit(self.operation_clicked, choice))
-
-        # update query from table label
-        self.from_table_text.set(self.selected_table_name)
 
         columns_names = createCsvFromDb.extract_table_column_names(self.selected_table_name)
         entries = createCsvFromDb.extract_entries_from_table(self.selected_table_name)
@@ -215,16 +194,16 @@ class App:
         treeFunctions.add_columns(tree_view, columns_names)
         for row in entries:
             tree_view.insert("", tk.END, values=row)
-
         tree_view.update()
 
         cols = tree_view['columns']
         for col in cols:
             tree_view.column(col, width=100, minwidth=110)  # restore to desired size
 
-    def populate_listbox(self, mylistbox, list):
-        for i in list:
-            mylistbox.insert("end", i)
+
+def populate_listbox(my_list_box, list_entries):
+    for i in list_entries:
+        my_list_box.insert("end", i)
 
 
 def configure_scrollbars():
@@ -247,6 +226,7 @@ def configure_scrollbars():
 
     x_scrollbar['command'] = tree_view.xview
     y_scrollbar['command'] = tree_view.yview
+
 
 if __name__ == "__main__":
     createCsvFromDb.csv_from_db_init()

@@ -50,14 +50,10 @@ def CreateCsvFromDB(db=DEFAULT_DATABASE_PATH):
       csvFileName = table_name + '.csv'
       table.to_csv(csvFileName, index_label='index')
 
-    print("\n")
-    display_table(cur, conn, "genres")
+    #print("\n")
+    # display_table(cur, conn, "genres")
     # cur.close()
     # conn.close()
-
-
-def get_cur():
-    return cur
 
 def left_align(df):
     left_aligned_df = \
@@ -66,6 +62,7 @@ def left_align(df):
         [dict(selector='th',
               props=[('text-align', 'left')])])
     return left_aligned_df
+
 
 def display_table(cur, conn, tableName):
     cur.execute(f'SELECT * FROM {tableName}')
@@ -92,6 +89,7 @@ def _extract_tables():
     cur.execute("SELECT name FROM sqlite_master WHERE type='table';")
     tables = cur.fetchall()
     return tables
+
 
 def extract_max_columns():
     tables = _extract_tables()
@@ -129,11 +127,18 @@ def extract_entries_from_table(table_name):
     return rows
 
 
-def execute_query(table_name, query_str):
+def execute_query(query_str):
     cur.execute(query_str)
     results = cur.fetchall()
     return results
 
+
+def is_select_match_input(table_name, column_name):
+    query_str = "SELECT DATA_TYPE FROM sqlite_master.COLUMNS" \
+                f" WHERE TABLE_NAME = '{table_name}' AND COLUMN_NAME = '{column_name}'"
+    cur.execute(query_str)
+    result = cur.fetchall()
+    return result
 
 def main():
     sys.stdout = open( \
