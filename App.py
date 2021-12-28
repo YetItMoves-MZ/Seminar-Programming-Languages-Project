@@ -9,7 +9,8 @@ root = None
 tree_view = None
 tables_list = None
 app = None
-
+wrapper1 = None
+wrapper2 = None
 
 class App:
     def __init__(self, root):
@@ -20,7 +21,7 @@ class App:
         screenheight = root.winfo_screenheight()
         alignstr = '%dx%d+%d+%d' % (width, height, (screenwidth - width) / 2, (screenheight - height) / 2)
         root.geometry(alignstr)
-        root.resizable(width=False, height=False)
+        root.resizable(width=True, height=True)
         ft = tkFont.Font(family='Times', size=10)
 
         """
@@ -39,97 +40,97 @@ class App:
 
         self.selected_table_name = None
 
-        self.table_list = tk.Listbox(root)
+        self.table_list = tk.Listbox(wrapper2)
         self.table_list["font"] = ft
         self.table_list["justify"] = "center"
-        self.table_list.place(x=5, y=265, width=170, height=230)
+        self.table_list.place(x=5, y=65, width=170, height=230)
         self.table_list.bind('<<ListboxSelect>>', self.table_list_select_click)
         self.populate_listbox(self.table_list, tables_list)
 
-        self.table_lists_label=tk.Label(root)
+        self.table_lists_label=tk.Label(wrapper2)
         self.table_lists_label["font"] = ft
         self.table_lists_label["justify"] = "center"
         self.table_lists_label["text"] = "Tables List"
-        self.table_lists_label.place(x=0, y=235, width=180, height=30)
+        self.table_lists_label.place(x=0, y=35, width=180, height=30)
 
-        self.tables_filter_Label = tk.Label(root)
+        self.tables_filter_Label = tk.Label(wrapper2)
         self.tables_filter_Label["font"] = ft
         self.tables_filter_Label["justify"] = "center"
         self.tables_filter_Label["text"] = "Tables Filter"
-        self.tables_filter_Label.place(x=405, y=235, width=180, height=30)
+        self.tables_filter_Label.place(x=405, y=35, width=180, height=30)
         
-        self.tables_filter_List = tk.Listbox(root)
+        self.tables_filter_List = tk.Listbox(wrapper2)
         self.tables_filter_List["font"] = ft
         self.tables_filter_List["justify"] = "center"
-        self.tables_filter_List.place(x=410, y=265, width=170, height=230)
+        self.tables_filter_List.place(x=410, y=65, width=170, height=230)
 
-        self.select_label = tk.Label(root)
+        self.select_label = tk.Label(wrapper2)
         self.select_label["font"] = ft
         self.select_label["justify"] = "center"
         self.select_label["text"] = "Select"
-        self.select_label.place(x=175, y=260, width=100, height=30)
+        self.select_label.place(x=175, y=60, width=100, height=30)
 
         self.select_choices = ()
-        self.select_clicked = tk.StringVar(root)
-        self.select_checkbox = tk.OptionMenu(root, self.select_clicked, self.select_choices)
+        self.select_clicked = tk.StringVar(wrapper2)
+        self.select_checkbox = tk.OptionMenu(wrapper2, self.select_clicked, self.select_choices)
         self.select_checkbox["font"] = ft
-        self.select_checkbox.place(x=255, y=260, width=130, height=30)
+        self.select_checkbox.place(x=255, y=60, width=130, height=30)
 
-        self.from_label = tk.Label(root)
+        self.from_label = tk.Label(wrapper2)
         self.from_label["font"] = ft
         self.from_label["justify"] = "center"
         self.from_label["text"] = "From"
-        self.from_label.place(x=175, y=295, width=100, height=30)
+        self.from_label.place(x=175, y=95, width=100, height=30)
 
         self.from_table_text = tk.StringVar()
         self.from_table_text.set("")
-        self.from_table_label = tk.Label(root, textvariable=self.from_table_text)
+        self.from_table_label = tk.Label(wrapper2, textvariable=self.from_table_text)
         self.from_table_label["font"] = ft
         self.from_table_label["justify"] = "center"
-        self.from_table_label.place(x=260, y=295, width=100, height=30)
+        self.from_table_label.place(x=260, y=95, width=100, height=30)
 
-        self.operation_label = tk.Label(root)
+        self.operation_label = tk.Label(wrapper2)
         self.operation_label["font"] = ft
         self.operation_label["justify"] = "center"
         self.operation_label["text"] = "Operation"
-        self.operation_label.place(x=175, y=330, width=100, height=30)
+        self.operation_label.place(x=175, y=130, width=100, height=30)
 
         self.operation_choices = ()
-        self.operation_clicked = tk.StringVar(root)
-        self.operation_checkbox = tk.OptionMenu(root, self.operation_clicked, self.operation_choices)
+        self.operation_clicked = tk.StringVar(wrapper2)
+        self.operation_checkbox = tk.OptionMenu(wrapper2, self.operation_clicked, self.operation_choices)
         self.operation_checkbox["font"] = ft
-        self.operation_checkbox.place(x=255, y=330, width=130, height=30)
+        self.operation_checkbox.place(x=255, y=130, width=130, height=30)
 
-        self.value_label = tk.Label(root)
+        self.value_label = tk.Label(wrapper2)
         self.value_label["font"] = ft
         self.value_label["justify"] = "center"
         self.value_label["text"] = "Value"
-        self.value_label.place(x=175, y=380, width=100, height=30)
+        self.value_label.place(x=175, y=180, width=100, height=30)
 
-        self.value_text = tk.Text(root)
+        self.value_text = tk.Text(wrapper2)
         self.value_text["font"] = ft
-        self.value_text.place(x=255, y=380, width=130, height=30)
+        self.value_text.place(x=255, y=180, width=130, height=30)
 
-        self.case_sensitive_label = tk.Label(root)
+        self.case_sensitive_label = tk.Label(wrapper2)
         self.case_sensitive_label["font"] = ft
         self.case_sensitive_label["justify"] = "center"
         self.case_sensitive_label["text"] = "Case Sensitive"
-        self.case_sensitive_label.place(x=175, y=430, width=100, height=30)
+        self.case_sensitive_label.place(x=175, y=230, width=100, height=30)
 
         self.case_sensitive_choice = tk.IntVar()
-        self.case_sensitive_checkbox = tk.Checkbutton(root, variable=self.case_sensitive_choice, onvalue=1, offvalue=0)
-        self.case_sensitive_checkbox.place(x=270, y=430, width=20, height=30)
+        self.case_sensitive_checkbox = tk.Checkbutton(wrapper2, variable=self.case_sensitive_choice, onvalue=1, offvalue=0)
+        self.case_sensitive_checkbox.place(x=270, y=230, width=20, height=30)
 
-        self.execute_button = tk.Button(root)
+        self.execute_button = tk.Button(wrapper2)
         self.execute_button["font"] = ft
         self.execute_button["justify"] = "center"
         self.execute_button["text"] = "Execute"
-        self.execute_button.place(x=315, y=430, width=70, height=25)
+        self.execute_button.place(x=315, y=230, width=70, height=25)
         self.execute_button["command"] = self.execute_query
 
-        self.error_message_text = tk.Text(root)
+        self.error_message_text = tk.Text(wrapper2)
         self.error_message_text["font"] = ft
-        self.error_message_text.place(x=255, y=470, width=130, height=30)
+        self.error_message_text.place(x=255, y=270, width=130, height=30)
 
     def get_listbox(self):
         return self.table_list
@@ -228,10 +229,10 @@ class App:
 
 
 def configure_scrollbars():
-    x_scrollbar = tk.Scrollbar(root, orient=tk.HORIZONTAL)
+    x_scrollbar = tk.Scrollbar(wrapper1, orient=tk.HORIZONTAL)
     x_scrollbar.pack(side=tk.BOTTOM, fill=tk.X)
 
-    y_scrollbar = tk.Scrollbar(root, orient=tk.VERTICAL)
+    y_scrollbar = tk.Scrollbar(wrapper1, orient=tk.VERTICAL, command=tree_view.yview())
     y_scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
     tree_view.configure(yscrollcommand=y_scrollbar.set)
@@ -257,8 +258,15 @@ if __name__ == "__main__":
     columns = ["" for i in range(max_num_columns)]
 
     root = tk.Tk()
+
+    wrapper2 = tk.LabelFrame(root, text="")
+    wrapper2.pack(side=tk.BOTTOM, fill="both", padx=0, pady=0)
+    wrapper2.place(x=0, y=200, width=600, height=320)
     app = App(root)
-    tree_view = ttk.Treeview(root, columns=(), show='headings', selectmode='extended')
+    wrapper1 = tk.LabelFrame(root, text="")
+    wrapper1.pack(side=tk.TOP, fill="both", padx=0, pady=0)
+    wrapper1.place(x=0, y=0, width=600, height=200)
+    tree_view = ttk.Treeview(wrapper1, columns=(), show='headings', selectmode='extended')
 
     configure_scrollbars()
 
