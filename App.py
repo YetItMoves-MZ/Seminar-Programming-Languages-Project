@@ -152,8 +152,7 @@ class App:
 
         # is_valid = createCsvFromDb.is_select_match_input(self.selected_table_name, select_choice)
         # if not is_valid == type(input_val):
-        #     self.error_message_text.insert(tk.INSERT, "Invalid Column and Value Type")
-
+        #       self.error_message_text.insert(tk.INSERT, "Invalid Column and Value Type")
 
         # TODO its only working for operators
         null_choice = ['IS NULL', 'IS NOT NULL']
