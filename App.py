@@ -189,39 +189,41 @@ class App:
 
 
     def table_list_select_click(self, event):
-        treeFunctions.clear_tree(tree_view)
-        treeFunctions.remove_columns(tree_view, tree_view['columns'])
-        self.refresh()
-        self.selected_table_name = self.table_list.get(self.table_list.curselection())
+        courser_selected = self.table_list.curselection()
+        if len(courser_selected) != 0:
+            treeFunctions.clear_tree(tree_view)
+            treeFunctions.remove_columns(tree_view, tree_view['columns'])
+            self.refresh()
+            self.selected_table_name = self.table_list.get(self.table_list.curselection())
 
-        self.select_choices = createCsvFromDb.extract_table_column_names(self.selected_table_name)
-        self.select_clicked.set(self.select_choices[0])
+            self.select_choices = createCsvFromDb.extract_table_column_names(self.selected_table_name)
+            self.select_clicked.set(self.select_choices[0])
 
-        for choice in self.select_choices:
-            self.select_checkbox['menu'].add_command(label=choice, command=tk._setit(self.select_clicked, choice))
+            for choice in self.select_choices:
+                self.select_checkbox['menu'].add_command(label=choice, command=tk._setit(self.select_clicked, choice))
 
-        self.operation_choices = ('>', '<', '=', '>=', '<=',
-                                  '!=', 'Like', 'In', 'Is Null', 'Is Not Null')
-        self.operation_clicked.set(self.operation_choices[0])
+            self.operation_choices = ('>', '<', '=', '>=', '<=',
+                                      '!=', 'Like', 'In', 'Is Null', 'Is Not Null')
+            self.operation_clicked.set(self.operation_choices[0])
 
-        for choice in self.operation_choices:
-            self.operation_checkbox['menu'].add_command(label=choice, command=tk._setit(self.operation_clicked, choice))
+            for choice in self.operation_choices:
+                self.operation_checkbox['menu'].add_command(label=choice, command=tk._setit(self.operation_clicked, choice))
 
-        # update query from table label
-        self.from_table_text.set(self.selected_table_name)
+            # update query from table label
+            self.from_table_text.set(self.selected_table_name)
 
-        columns_names = createCsvFromDb.extract_table_column_names(self.selected_table_name)
-        entries = createCsvFromDb.extract_entries_from_table(self.selected_table_name)
+            columns_names = createCsvFromDb.extract_table_column_names(self.selected_table_name)
+            entries = createCsvFromDb.extract_entries_from_table(self.selected_table_name)
 
-        treeFunctions.add_columns(tree_view, columns_names)
-        for row in entries:
-            tree_view.insert("", tk.END, values=row)
+            treeFunctions.add_columns(tree_view, columns_names)
+            for row in entries:
+                tree_view.insert("", tk.END, values=row)
 
-        tree_view.update()
+            tree_view.update()
 
-        cols = tree_view['columns']
-        for col in cols:
-            tree_view.column(col, width=100, minwidth=110)  # restore to desired size
+            cols = tree_view['columns']
+            for col in cols:
+                tree_view.column(col, width=100, minwidth=110)  # restore to desired size
 
     def populate_listbox(self, mylistbox, list):
         for i in list:
