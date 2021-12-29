@@ -160,6 +160,12 @@ class App:
 
         treeFunctions.clear_tree(tree_view)
 
+        if case_sensitive_val:
+            createCsvFromDb.execute_query('PRAGMA case_sensitive_like = 1;')
+        else:
+            createCsvFromDb.execute_query('PRAGMA case_sensitive_like = 0;')
+            query_str += "COLLATE NOCASE"
+
         columns_names = createCsvFromDb.extract_table_column_names(self.selected_table_name)
         treeFunctions.remove_columns(tree_view, columns_names)
         treeFunctions.add_columns(tree_view, columns_names)
