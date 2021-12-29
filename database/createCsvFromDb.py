@@ -1,4 +1,6 @@
 import sqlite3
+import traceback
+
 import pandas as pd
 from IPython.display import display
 import sys
@@ -128,9 +130,13 @@ def extract_entries_from_table(table_name):
 
 
 def execute_query(query_str):
-    cur.execute(query_str)
-    results = cur.fetchall()
-    return results
+    try:
+        cur.execute(query_str)
+        # conn.commit()
+        results = cur.fetchall()
+        return results
+    except sqlite3.Error as er:
+        return f"Query Failed: Error: {str(er)}"
 
 
 def is_select_match_input(table_name, column_name):

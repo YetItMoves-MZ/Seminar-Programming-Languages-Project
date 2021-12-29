@@ -1,6 +1,6 @@
 import tkinter as tk
 import tkinter.font as tkFont
-from tkinter import ttk
+from tkinter import ttk, END
 import createCsvFromDb
 import treeFunctions
 
@@ -131,7 +131,7 @@ class App:
 
         self.error_message_text = tk.Text(wrapper2)
         self.error_message_text["font"] = ft
-        self.error_message_text.place(x=255, y=270, width=130, height=30)
+        self.error_message_text.place(x=190, y=270, width=210, height=35)
 
     def get_listbox(self):
         return self.table_list
@@ -181,7 +181,14 @@ class App:
         treeFunctions.remove_columns(tree_view, columns_names)
         treeFunctions.add_columns(tree_view, columns_names)
 
+        self.error_message_text.delete('1.0', END)
+
         entries = createCsvFromDb.execute_query(query_str)
+
+        if isinstance(entries, str):
+            self.error_message_text.insert(END, entries)
+            return
+
         for row in entries:
             tree_view.insert("", tk.END, values=row)
         tree_view.update()
@@ -191,6 +198,9 @@ class App:
         # TODO add query_str to table operatrions list
         # TODO add when clicked on table operation list, display the query based on what was saved in output_queries
         # TODO add when right clicked on table operation list, remove query from table list and from output queries
+
+    def get_error_message_text(self):
+        return self.error_message_text
 
     def refresh(self):
         # Reset var and delete all old options
@@ -233,8 +243,32 @@ class App:
             tree_view.update()
 
             cols = tree_view['columns']
+            reverse = 1
             for col in cols:
                 tree_view.column(col, width=100, minwidth=110)  # restore to desired size
+                tree_view.heading(column=col, text=columns_names,
+                                  command=lambda _col=col: tree_view_sort_column(tree_view, col, not reverse))
+
+
+def tree_view_sort_column(treeview: ttk.Treeview, col, reverse: bool):
+    """
+    to sort the table by column when clicking in column
+    """
+    try:
+        data_list = [
+            (int(treeview.set(k, col)), k) for k in treeview.get_children("")
+        ]
+    except Exception:
+        data_list = [(treeview.set(k, col), k) for k in treeview.get_children("")]
+
+    data_list.sort(reverse=reverse)
+
+    # rearrange items in sorted positions
+    for index, (val, k) in enumerate(data_list):
+        treeview.move(k, "", index)
+
+    # reverse sort next time
+    treeview.heading(column=col, text=col, command=lambda _col=col: tree_view_sort_column(tree_view, _col, not reverse))
 
 
 def populate_listbox(my_list_box, list_entries):
@@ -282,7 +316,6 @@ if __name__ == "__main__":
     wrapper1.pack(side=tk.TOP, fill="both", padx=0, pady=0)
     wrapper1.place(x=0, y=0, width=600, height=200)
     tree_view = ttk.Treeview(wrapper1, columns=(), show='headings', selectmode='extended')
-
     configure_scrollbars()
 
     treeFunctions.add_columns(tree_view, columns)
