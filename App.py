@@ -133,44 +133,27 @@ class App:
         self.error_message_text["font"] = ft
         self.error_message_text.place(x=190, y=270, width=210, height=35)
 
-    def get_listbox(self):
-        return self.table_list
-
     def execute_query(self):
         if self.selected_table_name == "" or self.selected_table_name is None:
             return
 
         column_val = self.column_clicked.get()
         operation_val = self.operation_clicked.get()
-        input_val = self.value_text.get("1.0", tk.END)
+        input_val = self.value_text.get("1.0", "end-1c")
         case_sensitive_val = self.case_sensitive_choice.get()
 
-        while input_val.endswith('\n'):
-            # Drop last blank line which textbox automatically inserts.
-            # User may have manually deleted during edit so don't always assume
-            input_val = input_val[:-1]
-
-        # is_valid = createCsvFromDb.is_select_match_input(self.selected_table_name, select_choice)
-        # if not is_valid == type(input_val):
-        #       self.error_message_text.insert(tk.INSERT, "Invalid Column and Value Type")
-
-        # TODO its only working for operators
+        # TODO case Sensitive
         null_choice = ['IS NULL', 'IS NOT NULL']
 
         # if operation is null/ is not null
         if null_choice.__contains__(operation_val):
             query_str = f"SELECT * FROM {self.selected_table_name} WHERE {column_val} {operation_val}"
-        # if its multiple strings: (brazil,germany,..)
+        # if its multiple variables: (brazil,germany,..) , (1,2,3)
         elif isinstance(input_val, str) and input_val.__contains__(','):
             input_val = tuple(input_val.split(','))
             query_str = f"SELECT * FROM {self.selected_table_name} WHERE {column_val} {operation_val}" \
                         f" {input_val}"
-        # if its multiple ints: (1,2,3...)
-        elif len(input_val) != 1 and not isinstance(input_val, str):
-            input_val = tuple(input_val.split(','))
-            query_str = f"SELECT * FROM {self.selected_table_name} WHERE {column_val} {operation_val}" \
-                        f" {input_val}"
-        # everything else
+        # single value
         else:
             query_str = f"SELECT * FROM {self.selected_table_name} WHERE {column_val} {operation_val}" \
                         f" ('{input_val}')"
@@ -185,6 +168,7 @@ class App:
 
         entries = createCsvFromDb.execute_query(query_str)
 
+        # invalid query
         if isinstance(entries, str):
             self.error_message_text.insert(END, entries)
             return
@@ -193,11 +177,18 @@ class App:
             tree_view.insert("", tk.END, values=row)
         tree_view.update()
 
-        # TODO try catch on this method, this would happen probably on invalid query,
         # TODO get the columns of the query into a list
         # TODO add query_str to table operatrions list
         # TODO add when clicked on table operation list, display the query based on what was saved in output_queries
         # TODO add when right clicked on table operation list, remove query from table list and from output queries
+
+        # Sort columns by click on headers
+        cols = tree_view['columns']
+        reverse = 1
+        for col in cols:
+            tree_view.column(col, width=100, minwidth=110)  # restore to desired size
+            tree_view.heading(column=col, text=col,
+                              command=lambda _col=col: tree_view_sort_column(tree_view, _col, not reverse))
 
     def get_error_message_text(self):
         return self.error_message_text
@@ -246,8 +237,8 @@ class App:
             reverse = 1
             for col in cols:
                 tree_view.column(col, width=100, minwidth=110)  # restore to desired size
-                tree_view.heading(column=col, text=columns_names,
-                                  command=lambda _col=col: tree_view_sort_column(tree_view, col, not reverse))
+                tree_view.heading(column=col, text=col,
+                                  command=lambda _col=col:tree_view_sort_column(tree_view, _col, not reverse))
 
 
 def tree_view_sort_column(treeview: ttk.Treeview, col, reverse: bool):
@@ -267,8 +258,8 @@ def tree_view_sort_column(treeview: ttk.Treeview, col, reverse: bool):
     for index, (val, k) in enumerate(data_list):
         treeview.move(k, "", index)
 
-    # reverse sort next time
-    treeview.heading(column=col, text=col, command=lambda _col=col: tree_view_sort_column(tree_view, _col, not reverse))
+    tree_view.heading(column=col, text=col,
+                      command=lambda _col=col: tree_view_sort_column(tree_view, col, not reverse))
 
 
 def populate_listbox(my_list_box, list_entries):

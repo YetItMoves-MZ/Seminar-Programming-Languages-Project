@@ -4,10 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="165573d3-0f61-444e-a8a8-c2fa7bbbff05" name="Changes" comment="fixing multiple values insert">
+    <list default="true" id="165573d3-0f61-444e-a8a8-c2fa7bbbff05" name="Changes" comment="implement column sorting">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/App.py" beforeDir="false" afterPath="$PROJECT_DIR$/App.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/createCsvFromDb.py" beforeDir="false" afterPath="$PROJECT_DIR$/database/createCsvFromDb.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -303,7 +302,14 @@
       <option name="project" value="LOCAL" />
       <updated>1640708427399</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="implement column sorting">
+      <created>1640780169447</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1640780169447</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -331,7 +337,8 @@
     <MESSAGE value="update Gui" />
     <MESSAGE value="fixing crap" />
     <MESSAGE value="fixing multiple values insert" />
-    <option name="LAST_COMMIT_MESSAGE" value="fixing multiple values insert" />
+    <MESSAGE value="implement column sorting" />
+    <option name="LAST_COMMIT_MESSAGE" value="implement column sorting" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -360,21 +367,6 @@
           <url>file://$PROJECT_DIR$/database/createCsvFromDb.py</url>
           <line>131</line>
           <option name="timeStamp" value="48" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/App.py</url>
-          <line>139</line>
-          <option name="timeStamp" value="51" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/App.py</url>
-          <line>185</line>
-          <option name="timeStamp" value="54" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/App.py</url>
-          <line>147</line>
-          <option name="timeStamp" value="55" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
