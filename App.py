@@ -165,11 +165,6 @@ class App:
             input_val = tuple(input_val.split(','))
             query_str = f"SELECT * FROM {self.selected_table_name} WHERE {column_val} {operation_val}" \
                         f" {input_val}"
-        # if its multiple ints: (1,2,3...)
-        elif len(input_val) != 1 and not isinstance(input_val, str):
-            input_val = tuple(input_val.split(','))
-            query_str = f"SELECT * FROM {self.selected_table_name} WHERE {column_val} {operation_val}" \
-                        f" {input_val}"
         # everything else
         else:
             query_str = f"SELECT * FROM {self.selected_table_name} WHERE {column_val} {operation_val}" \
@@ -177,11 +172,19 @@ class App:
 
         treeFunctions.clear_tree(tree_view)
 
+        if case_sensitive_val:
+            createCsvFromDb.execute_query('PRAGMA case_sensitive_like = 1;')
+        else:
+            createCsvFromDb.execute_query('PRAGMA case_sensitive_like = 0;')
+            query_str += "COLLATE NOCASE"
+
         columns_names = createCsvFromDb.extract_table_column_names(self.selected_table_name)
         treeFunctions.remove_columns(tree_view, columns_names)
         treeFunctions.add_columns(tree_view, columns_names)
 
         self.error_message_text.delete('1.0', END)
+
+
 
         entries = createCsvFromDb.execute_query(query_str)
 
@@ -246,8 +249,8 @@ class App:
             reverse = 1
             for col in cols:
                 tree_view.column(col, width=100, minwidth=110)  # restore to desired size
-                tree_view.heading(column=col, text=columns_names,
-                                  command=lambda _col=col: tree_view_sort_column(tree_view, col, not reverse))
+                tree_view.heading(column=col, text=col,
+                                  command=lambda _col=col: tree_view_sort_column(tree_view, _col, not reverse))
 
 
 def tree_view_sort_column(treeview: ttk.Treeview, col, reverse: bool):
