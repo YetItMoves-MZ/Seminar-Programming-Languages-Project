@@ -4,7 +4,6 @@ from tkinter import ttk, END
 import createCsvFromDb
 import treeFunctions
 
-
 root = None
 tree_view = None
 tables_list = None
@@ -12,6 +11,7 @@ app = None
 
 wrapper1 = None
 wrapper2 = None
+
 
 class App:
     def __init__(self, root):
@@ -48,7 +48,7 @@ class App:
         self.table_list.bind('<<ListboxSelect>>', self.table_list_select_click)
         populate_listbox(self.table_list, tables_list)
 
-        self.table_lists_label=tk.Label(wrapper2)
+        self.table_lists_label = tk.Label(wrapper2)
         self.table_lists_label["font"] = ft
         self.table_lists_label["justify"] = "center"
         self.table_lists_label["text"] = "Tables List"
@@ -59,7 +59,7 @@ class App:
         self.tables_filter_Label["justify"] = "center"
         self.tables_filter_Label["text"] = "Tables Filter"
         self.tables_filter_Label.place(x=405, y=35, width=180, height=30)
-        
+
         self.tables_filter_List = tk.Listbox(wrapper2)
         self.tables_filter_List["font"] = ft
         self.tables_filter_List["justify"] = "center"
@@ -119,7 +119,8 @@ class App:
         self.case_sensitive_label.place(x=175, y=230, width=100, height=30)
 
         self.case_sensitive_choice = tk.IntVar()
-        self.case_sensitive_checkbox = tk.Checkbutton(wrapper2, variable=self.case_sensitive_choice, onvalue=1, offvalue=0)
+        self.case_sensitive_checkbox = tk.Checkbutton(wrapper2, variable=self.case_sensitive_choice, onvalue=1,
+                                                      offvalue=0)
         self.case_sensitive_checkbox.place(x=270, y=230, width=20, height=30)
 
         self.execute_button = tk.Button(wrapper2)
@@ -142,7 +143,6 @@ class App:
         input_val = self.value_text.get("1.0", "end-1c")
         case_sensitive_val = self.case_sensitive_choice.get()
 
-        # TODO case Sensitive
         null_choice = ['IS NULL', 'IS NOT NULL']
 
         # if operation is null/ is not null
@@ -160,11 +160,13 @@ class App:
 
         treeFunctions.clear_tree(tree_view)
 
-        if case_sensitive_val:
-            createCsvFromDb.execute_query('PRAGMA case_sensitive_like = 1;')
-        else:
-            createCsvFromDb.execute_query('PRAGMA case_sensitive_like = 0;')
-            query_str += "COLLATE NOCASE"
+        # case sensitive check
+        if not null_choice.__contains__(operation_val):
+            if case_sensitive_val:
+                createCsvFromDb.execute_query('PRAGMA case_sensitive_like = 1;')
+            else:
+                createCsvFromDb.execute_query('PRAGMA case_sensitive_like = 0;')
+                query_str += "COLLATE NOCASE"
 
         columns_names = createCsvFromDb.extract_table_column_names(self.selected_table_name)
         treeFunctions.remove_columns(tree_view, columns_names)
@@ -179,12 +181,19 @@ class App:
             self.error_message_text.insert(END, entries)
             return
 
+        # create table from query
+        # table_name = "testing"
+        # sql_statement = 'INSERT INTO testing VALUES (?, ?)' # TODO will need to add more ? later
+        # createCsvFromDb.insert_new_table(sql_statement, entries)
+
+
+
         for row in entries:
             tree_view.insert("", tk.END, values=row)
         tree_view.update()
 
         # TODO get the columns of the query into a list
-        # TODO add query_str to table operatrions list
+        # TODO add query_str to table operations list
         # TODO add when clicked on table operation list, display the query based on what was saved in output_queries
         # TODO add when right clicked on table operation list, remove query from table list and from output queries
 
@@ -223,11 +232,12 @@ class App:
                 self.column_checkbox['menu'].add_command(label=choice, command=tk._setit(self.column_clicked, choice))
 
             self.operation_choices = ('>', '<', '=', '>=', '<=',
-                                  '!=', 'LIKE', 'IN', 'IS NULL', 'IS NOT NULL')
+                                      '!=', 'LIKE', 'IN', 'IS NULL', 'IS NOT NULL')
             self.operation_clicked.set(self.operation_choices[0])
 
             for choice in self.operation_choices:
-                self.operation_checkbox['menu'].add_command(label=choice, command=tk._setit(self.operation_clicked, choice))
+                self.operation_checkbox['menu'].add_command(label=choice,
+                                                            command=tk._setit(self.operation_clicked, choice))
 
             self.from_table_text.set(self.selected_table_name)
 
@@ -244,7 +254,7 @@ class App:
             for col in cols:
                 tree_view.column(col, width=100, minwidth=110)  # restore to desired size
                 tree_view.heading(column=col, text=col,
-                                  command=lambda _col=col:tree_view_sort_column(tree_view, _col, not reverse))
+                                  command=lambda _col=col: tree_view_sort_column(tree_view, _col, not reverse))
 
 
 def tree_view_sort_column(treeview: ttk.Treeview, col, reverse: bool):
@@ -271,6 +281,11 @@ def tree_view_sort_column(treeview: ttk.Treeview, col, reverse: bool):
 def populate_listbox(my_list_box, list_entries):
     for i in list_entries:
         my_list_box.insert("end", i)
+
+
+def on_closing():
+    # createCsvFromDb.csv_from_db_destroy()
+    root.destroy()
 
 
 def configure_scrollbars():
@@ -316,5 +331,6 @@ if __name__ == "__main__":
     configure_scrollbars()
 
     treeFunctions.add_columns(tree_view, columns)
+    root.protocol("WM_DELETE_WINDOW", on_closing)
     root.mainloop()
-    createCsvFromDb.csv_from_db_destroy()
+    # createCsvFromDb.csv_from_db_destroy()

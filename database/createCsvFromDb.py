@@ -10,6 +10,7 @@ cur = None
 
 DEFAULT_DATABASE_PATH = 'database/chinook.db'
 
+
 def csv_from_db_init(db=DEFAULT_DATABASE_PATH):
     global conn, cur
     conn = sqlite3.connect(db)
@@ -22,9 +23,10 @@ def csv_from_db_destroy():
     if cur is not None:
         cur.close()
 
+
 def CreateCsvFromDB(db=DEFAULT_DATABASE_PATH):
-    print("\n" + db +" db Schema")
-    cur.execute(\
+    print("\n" + db + " db Schema")
+    cur.execute( \
         "SELECT name "
         "FROM sqlite_master "
         "WHERE type='table';")
@@ -32,30 +34,31 @@ def CreateCsvFromDB(db=DEFAULT_DATABASE_PATH):
     print("tables:", tables)
 
     for column in tables:
-      table_name = column[0]
-      print("Table Name: ", table_name)
-      # display_table(cur, conn, table_name)
-      cur.execute("PRAGMA table_info(" + table_name + ")")
-      info = cur.fetchall()
-      print ("   " + table_name + " attributes:")
-      for col in info:
-          print("   ", col)
-      cur.execute("""SELECT * FROM """ + table_name)
-      df = pd.DataFrame(cur.fetchall())
-      df.columns = [x[0] for x in cur.description]
-      #display(df)
-      #print(df)
-      print("\n")
+        table_name = column[0]
+        print("Table Name: ", table_name)
+        # display_table(cur, conn, table_name)
+        cur.execute("PRAGMA table_info(" + table_name + ")")
+        info = cur.fetchall()
+        print("   " + table_name + " attributes:")
+        for col in info:
+            print("   ", col)
+        cur.execute("""SELECT * FROM """ + table_name)
+        df = pd.DataFrame(cur.fetchall())
+        df.columns = [x[0] for x in cur.description]
+        # display(df)
+        # print(df)
+        print("\n")
 
-      table = pd.read_sql_query(\
+        table = pd.read_sql_query( \
             "SELECT * from %s" % table_name, conn)
-      csvFileName = table_name + '.csv'
-      table.to_csv(csvFileName, index_label='index')
+        csvFileName = table_name + '.csv'
+        table.to_csv(csvFileName, index_label='index')
 
-    #print("\n")
+    # print("\n")
     # display_table(cur, conn, "genres")
     # cur.close()
     # conn.close()
+
 
 def left_align(df):
     left_aligned_df = \
@@ -145,6 +148,12 @@ def is_select_match_input(table_name, column_name):
     cur.execute(query_str)
     result = cur.fetchall()
     return result
+
+
+def insert_new_table(sql_statement, table_rows):
+    # TODO needs implementation
+    cur.executemany(sql_statement, table_rows)
+
 
 def main():
     sys.stdout = open( \
