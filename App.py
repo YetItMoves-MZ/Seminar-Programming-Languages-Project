@@ -65,6 +65,7 @@ class App:
         self.table_filter_list["font"] = ft
         self.table_filter_list["justify"] = "center"
         self.table_filter_list.place(x=410, y=65, width=170, height=230)
+        self.table_filter_list.bind('<Button-3>', self.table_filter_delete_event)
         self.table_filter_list.bind('<<ListboxSelect>>', self.table_filter_list_select_click)
 
         self.column_label = tk.Label(wrapper2)
@@ -149,6 +150,16 @@ class App:
             self.operation_checkbox['menu'].add_command(label=choice,
                                                         command=tk._setit(self.operation_clicked, choice))
 
+    def table_filter_delete_event(self, event):
+        if not self.validate_my_event(self.table_filter_list):
+            return
+
+        selected_idx = self.table_filter_list.curselection()
+        table_name = self.table_filter_list.get(selected_idx)
+        createCsvFromDb.drop_table(table_name)
+        self.table_filter_list.delete(selected_idx)
+        self.output_queries.remove(table_name)
+
     def translate_operator_to_word(self, operator):
         if operator == ">":
             return "bigger_than"
@@ -164,6 +175,15 @@ class App:
             return "bigger_or_equal"
         else:
             return operator
+
+    def translate_input_to_word(self, input):
+        rv = input
+        invalids_chars = ["%", "'", "*"]
+        for invalid_char in invalids_chars:
+            rv = rv.replace(invalid_char, "")
+
+        return rv
+
 
     def query_builder(self, column_val, operation_val, input_val):
         # extract information for building query
@@ -227,7 +247,8 @@ class App:
         input_val = self.value_text.get("1.0", "end-1c")
 
         operation_str = self.translate_operator_to_word(operation_val)
-        new_table_name = f"{self.selected_table_name}_{column_val}_{operation_str}_{input_val}"
+        input_str = self.translate_input_to_word(input_val)
+        new_table_name = f"{self.selected_table_name}_{column_val}_{operation_str}_{input_str}"
 
         if not self.validate_query_is_new(new_table_name):
             return
@@ -347,8 +368,6 @@ def tree_view_sort_column(treeview: ttk.Treeview, col, reverse: bool):
 def populate_listbox(my_list_box, list_entries):
     for i in list_entries:
         my_list_box.insert("end", i)
-
-
 
 
 def configure_scrollbars():

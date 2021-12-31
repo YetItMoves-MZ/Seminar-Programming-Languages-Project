@@ -164,14 +164,9 @@ def drop_table(table_name):
 def main(stdout_file="database/CreateCsvFromDBoutput.txt", database_name="database/chinook.db"):
     sys.stdout = open(stdout_file, 'w', encoding="utf-8")
     csv_from_db_init(database_name)
+
     CreateCsvFromDB()
     sys.stdout.close()
-
-    # drop_tables = ['albums_AlbumId_bigger_than_75','artists_ArtistId_smaller_than_6', 'artists_ArtistId_smaller_than_6_ArtistId_smaller_than_2']
-    # for tname in drop_tables:
-    #     query_str = f"DROP TABLE {tname}"
-    #     execute_query(query_str)
-
 
 
 if __name__ == '__main__':
