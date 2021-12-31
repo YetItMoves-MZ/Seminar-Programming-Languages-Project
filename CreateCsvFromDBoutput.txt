@@ -1,5 +1,3 @@
 
-chinook.db db Schema
+database/chinook.db db Schema
 tables: []
-
-

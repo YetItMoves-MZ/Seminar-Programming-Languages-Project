@@ -3,6 +3,7 @@ import tkinter.font as tkFont
 from tkinter import ttk, END
 import createCsvFromDb
 import treeFunctions
+import os
 
 root = None
 tree_view = None
@@ -37,7 +38,7 @@ class App:
         }
         """
 
-        self.output_queries = {}
+        self.output_queries = set()
 
         self.selected_table_name = None
 
@@ -54,16 +55,17 @@ class App:
         self.table_lists_label["text"] = "Tables List"
         self.table_lists_label.place(x=0, y=35, width=180, height=30)
 
-        self.tables_filter_Label = tk.Label(wrapper2)
-        self.tables_filter_Label["font"] = ft
-        self.tables_filter_Label["justify"] = "center"
-        self.tables_filter_Label["text"] = "Tables Filter"
-        self.tables_filter_Label.place(x=405, y=35, width=180, height=30)
+        self.table_filter_Label = tk.Label(wrapper2)
+        self.table_filter_Label["font"] = ft
+        self.table_filter_Label["justify"] = "center"
+        self.table_filter_Label["text"] = "Tables Filter"
+        self.table_filter_Label.place(x=405, y=35, width=180, height=30)
 
-        self.tables_filter_List = tk.Listbox(wrapper2)
-        self.tables_filter_List["font"] = ft
-        self.tables_filter_List["justify"] = "center"
-        self.tables_filter_List.place(x=410, y=65, width=170, height=230)
+        self.table_filter_list = tk.Listbox(wrapper2)
+        self.table_filter_list["font"] = ft
+        self.table_filter_list["justify"] = "center"
+        self.table_filter_list.place(x=410, y=65, width=170, height=230)
+        self.table_filter_list.bind('<<ListboxSelect>>', self.table_filter_list_select_click)
 
         self.column_label = tk.Label(wrapper2)
         self.column_label["font"] = ft
@@ -134,6 +136,88 @@ class App:
         self.error_message_text["font"] = ft
         self.error_message_text.place(x=190, y=270, width=210, height=35)
 
+        self.init_operations()
+
+        root.protocol("WM_DELETE_WINDOW", self.on_closing)
+
+    def init_operations(self):
+        self.operation_choices = ('>', '<', '=', '>=', '<=',
+                                  '!=', 'LIKE', 'IN', 'IS NULL', 'IS NOT NULL')
+        self.operation_clicked.set(self.operation_choices[0])
+
+        for choice in self.operation_choices:
+            self.operation_checkbox['menu'].add_command(label=choice,
+                                                        command=tk._setit(self.operation_clicked, choice))
+
+    def translate_operator_to_word(self, operator):
+        if operator == ">":
+            return "bigger_than"
+        elif operator == "<":
+            return "smaller_than"
+        elif operator == "=":
+            return "equal"
+        elif operator == "!=":
+            return "not_equal"
+        elif operator == "<=":
+            return "smaller_or_equal;"
+        elif operator == ">=":
+            return "bigger_or_equal"
+        else:
+            return operator
+
+    def query_builder(self, column_val, operation_val, input_val):
+        # extract information for building query
+
+        case_sensitive_val = self.case_sensitive_choice.get()
+
+        is_null_operation = True if operation_val in ['IS NULL', 'IS NOT NULL'] else False
+        is_multi_variable = True if ',' in input_val else False
+
+        # if operation is null/ is not null
+        if is_null_operation:
+            query_str = f"SELECT * FROM {self.selected_table_name} WHERE {column_val} {operation_val}"
+        # if its multiple variables: (brazil,germany,..) , (1,2,3)
+        elif is_multi_variable:
+            input_val = tuple(input_val.split(','))
+            query_str = f"SELECT * FROM {self.selected_table_name} WHERE {column_val} {operation_val}" \
+                        f" {input_val}"
+        # single value
+        else:
+            query_str = f"SELECT * FROM {self.selected_table_name} WHERE {column_val} {operation_val}" \
+                        f" {input_val}"
+
+        # case sensitive check
+        if not is_null_operation:
+            createCsvFromDb.execute_query(f"PRAGMA case_sensitive_like = {case_sensitive_val};")
+            query_str += " COLLATE NOCASE"
+
+        return query_str
+
+    def validate_query_is_new(self, new_table_name):
+        self.error_message_text.delete('1.0', END)
+        if new_table_name in self.output_queries:
+            self.error_message_text.insert(END, f"{new_table_name} already exist")
+            return False
+
+        return True
+
+    def update_tree_view(self, entries, table_name):
+        treeFunctions.clear_tree(tree_view)
+        columns_names = createCsvFromDb.extract_table_column_names(table_name)
+        treeFunctions.remove_columns(tree_view, columns_names)
+        treeFunctions.add_columns(tree_view, columns_names)
+
+        for row in entries:
+            tree_view.insert("", tk.END, values=row)
+        tree_view.update()
+
+        cols = tree_view['columns']
+        reverse = 1
+        for col in cols:
+            tree_view.column(col, width=100, minwidth=110)  # restore to desired size
+            tree_view.heading(column=col, text=col,
+                              command=lambda _col=col: tree_view_sort_column(tree_view, _col, not reverse))
+
     def execute_query(self):
         if self.selected_table_name == "" or self.selected_table_name is None:
             return
@@ -141,69 +225,45 @@ class App:
         column_val = self.column_clicked.get()
         operation_val = self.operation_clicked.get()
         input_val = self.value_text.get("1.0", "end-1c")
-        case_sensitive_val = self.case_sensitive_choice.get()
 
-        null_choice = ['IS NULL', 'IS NOT NULL']
+        operation_str = self.translate_operator_to_word(operation_val)
+        new_table_name = f"{self.selected_table_name}_{column_val}_{operation_str}_{input_val}"
 
-        # if operation is null/ is not null
-        if null_choice.__contains__(operation_val):
-            query_str = f"SELECT * FROM {self.selected_table_name} WHERE {column_val} {operation_val}"
-        # if its multiple variables: (brazil,germany,..) , (1,2,3)
-        elif isinstance(input_val, str) and input_val.__contains__(','):
-            input_val = tuple(input_val.split(','))
-            query_str = f"SELECT * FROM {self.selected_table_name} WHERE {column_val} {operation_val}" \
-                        f" {input_val}"
-        # single value
-        else:
-            query_str = f"SELECT * FROM {self.selected_table_name} WHERE {column_val} {operation_val}" \
-                        f" ('{input_val}')"
-
-        treeFunctions.clear_tree(tree_view)
-
-        # case sensitive check
-        if not null_choice.__contains__(operation_val):
-            if case_sensitive_val:
-                createCsvFromDb.execute_query('PRAGMA case_sensitive_like = 1;')
-            else:
-                createCsvFromDb.execute_query('PRAGMA case_sensitive_like = 0;')
-                query_str += "COLLATE NOCASE"
-
-        columns_names = createCsvFromDb.extract_table_column_names(self.selected_table_name)
-        treeFunctions.remove_columns(tree_view, columns_names)
-        treeFunctions.add_columns(tree_view, columns_names)
-
-        self.error_message_text.delete('1.0', END)
-
-        entries = createCsvFromDb.execute_query(query_str)
-
-        # invalid query
-        if isinstance(entries, str):
-            self.error_message_text.insert(END, entries)
+        if not self.validate_query_is_new(new_table_name):
             return
 
-        # create table from query
-        # table_name = "testing"
-        # sql_statement = 'INSERT INTO testing VALUES (?, ?)' # TODO will need to add more ? later
-        # createCsvFromDb.insert_new_table(sql_statement, entries)
+        query_str = self.query_builder(column_val, operation_val, input_val)
 
+        # create new table and return its entries
+        entries = self.create_new_table_from_query(query_str, new_table_name)
+        if isinstance(entries, str):
+            error_str = entries
+            self.error_message_text.insert(END, error_str)
+            return
 
+        self.output_queries.add(new_table_name)
+        self.table_filter_list.insert("end", new_table_name)
 
-        for row in entries:
-            tree_view.insert("", tk.END, values=row)
-        tree_view.update()
+        self.update_tree_view(entries, new_table_name)
 
-        # TODO get the columns of the query into a list
-        # TODO add query_str to table operations list
         # TODO add when clicked on table operation list, display the query based on what was saved in output_queries
         # TODO add when right clicked on table operation list, remove query from table list and from output queries
 
-        # Sort columns by click on headers
-        cols = tree_view['columns']
-        reverse = 1
-        for col in cols:
-            tree_view.column(col, width=100, minwidth=110)  # restore to desired size
-            tree_view.heading(column=col, text=col,
-                              command=lambda _col=col: tree_view_sort_column(tree_view, _col, not reverse))
+    def create_new_table_from_query(self, query_str, table_name):
+        error = createCsvFromDb.insert_new_table(table_name, query_str)
+        # if error is not str, no error happened
+        if isinstance(error, str):
+            self.error_message_text.insert(END, error)
+            return error
+
+        entires = createCsvFromDb.execute_query(f"SELECT * FROM {table_name}")
+        # if error is not str, no error happened
+        if isinstance(entires, str):
+            error_str = entires
+            self.error_message_text.insert(END, error_str)
+            return error
+
+        return entires
 
     def get_error_message_text(self):
         return self.error_message_text
@@ -214,47 +274,53 @@ class App:
         self.column_checkbox['menu'].delete(0, 'end')
 
         self.operation_clicked.set('')
-        self.operation_checkbox['menu'].delete(0, 'end')
+
+    def validate_my_event(self, list_widget):
+        selection = list_widget.curselection()
+        return len(selection) != 0
+
+    def select_table_event(self, table_name):
+        treeFunctions.clear_tree(tree_view)
+        treeFunctions.remove_columns(tree_view, tree_view['columns'])
+
+        self.refresh()
+        self.selected_table_name = table_name
+
+        self.column_choices = createCsvFromDb.extract_table_column_names(self.selected_table_name)
+        self.column_clicked.set(self.column_choices[0])
+
+        for choice in self.column_choices:
+            self.column_checkbox['menu'].add_command(label=choice, command=tk._setit(self.column_clicked, choice))
+
+        self.from_table_text.set(self.selected_table_name)
+
+        entries = createCsvFromDb.extract_entries_from_table(self.selected_table_name)
+
+        self.update_tree_view(entries, self.selected_table_name)
+
+    def table_filter_list_select_click(self, event):
+        if not self.validate_my_event(self.table_filter_list):
+            return
+        table_name = self.table_filter_list.get(self.table_filter_list.curselection())
+        self.select_table_event(table_name)
 
     def table_list_select_click(self, event):
-        courser_selected = self.table_list.curselection()
-        if len(courser_selected) != 0:
-            treeFunctions.clear_tree(tree_view)
-            treeFunctions.remove_columns(tree_view, tree_view['columns'])
+        if not self.validate_my_event(self.table_list):
+            return
 
-            self.refresh()
-            self.selected_table_name = self.table_list.get(self.table_list.curselection())
+        table_name = self.table_list.get(self.table_list.curselection())
+        self.select_table_event(table_name)
 
-            self.column_choices = createCsvFromDb.extract_table_column_names(self.selected_table_name)
-            self.column_clicked.set(self.column_choices[0])
+    def on_closing(self):
+        for table_name in self.output_queries:
+            createCsvFromDb.drop_table(table_name)
 
-            for choice in self.column_choices:
-                self.column_checkbox['menu'].add_command(label=choice, command=tk._setit(self.column_clicked, choice))
-
-            self.operation_choices = ('>', '<', '=', '>=', '<=',
-                                      '!=', 'LIKE', 'IN', 'IS NULL', 'IS NOT NULL')
-            self.operation_clicked.set(self.operation_choices[0])
-
-            for choice in self.operation_choices:
-                self.operation_checkbox['menu'].add_command(label=choice,
-                                                            command=tk._setit(self.operation_clicked, choice))
-
-            self.from_table_text.set(self.selected_table_name)
-
-            columns_names = createCsvFromDb.extract_table_column_names(self.selected_table_name)
-            entries = createCsvFromDb.extract_entries_from_table(self.selected_table_name)
-
-            treeFunctions.add_columns(tree_view, columns_names)
-            for row in entries:
-                tree_view.insert("", tk.END, values=row)
-            tree_view.update()
-
-            cols = tree_view['columns']
-            reverse = 1
-            for col in cols:
-                tree_view.column(col, width=100, minwidth=110)  # restore to desired size
-                tree_view.heading(column=col, text=col,
-                                  command=lambda _col=col: tree_view_sort_column(tree_view, _col, not reverse))
+            # delete generated file
+            csv_file_name = f"{table_name}.csv"
+            if os.path.exists(csv_file_name):
+                os.remove(csv_file_name)
+        #createCsvFromDb.csv_from_db_destroy()
+        root.destroy()
 
 
 def tree_view_sort_column(treeview: ttk.Treeview, col, reverse: bool):
@@ -283,9 +349,6 @@ def populate_listbox(my_list_box, list_entries):
         my_list_box.insert("end", i)
 
 
-def on_closing():
-    # createCsvFromDb.csv_from_db_destroy()
-    root.destroy()
 
 
 def configure_scrollbars():
@@ -311,7 +374,6 @@ def configure_scrollbars():
 
 
 if __name__ == "__main__":
-    createCsvFromDb.csv_from_db_init()
     createCsvFromDb.main()
 
     max_num_columns = createCsvFromDb.extract_max_columns()
@@ -331,6 +393,4 @@ if __name__ == "__main__":
     configure_scrollbars()
 
     treeFunctions.add_columns(tree_view, columns)
-    root.protocol("WM_DELETE_WINDOW", on_closing)
     root.mainloop()
-    # createCsvFromDb.csv_from_db_destroy()

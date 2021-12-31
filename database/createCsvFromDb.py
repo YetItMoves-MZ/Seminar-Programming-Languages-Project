@@ -10,7 +10,6 @@ cur = None
 
 DEFAULT_DATABASE_PATH = 'database/chinook.db'
 
-
 def csv_from_db_init(db=DEFAULT_DATABASE_PATH):
     global conn, cur
     conn = sqlite3.connect(db)
@@ -18,10 +17,13 @@ def csv_from_db_init(db=DEFAULT_DATABASE_PATH):
 
 
 def csv_from_db_destroy():
+    global  conn, cur
     if conn is not None:
         conn.close()
+        conn = None
     if cur is not None:
         cur.close()
+        cur = None
 
 
 def CreateCsvFromDB(db=DEFAULT_DATABASE_PATH):
@@ -150,17 +152,27 @@ def is_select_match_input(table_name, column_name):
     return result
 
 
-def insert_new_table(sql_statement, table_rows):
-    # TODO needs implementation
-    cur.executemany(sql_statement, table_rows)
+def insert_new_table(new_table_name, query_str):
+    create_query = f"CREATE TABLE {new_table_name} AS {query_str}"
+    return execute_query(create_query)
 
 
-def main():
-    sys.stdout = open( \
-        "database/CreateCsvFromDBoutput.txt", 'w', encoding="utf-8")
+def drop_table(table_name):
+    query = f"DROP TABLE {table_name}"
+    return execute_query(query)
+
+def main(stdout_file="database/CreateCsvFromDBoutput.txt", database_name="database/chinook.db"):
+    sys.stdout = open(stdout_file, 'w', encoding="utf-8")
+    csv_from_db_init(database_name)
     CreateCsvFromDB()
     sys.stdout.close()
 
+    # drop_tables = ['albums_AlbumId_bigger_than_75','artists_ArtistId_smaller_than_6', 'artists_ArtistId_smaller_than_6_ArtistId_smaller_than_2']
+    # for tname in drop_tables:
+    #     query_str = f"DROP TABLE {tname}"
+    #     execute_query(query_str)
+
+
 
 if __name__ == '__main__':
-    main()
+    main("CreateCsvFromDBoutput.txt", "chinook.db")

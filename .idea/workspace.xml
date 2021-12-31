@@ -4,9 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="165573d3-0f61-444e-a8a8-c2fa7bbbff05" name="Changes" comment="implement column sorting">
+    <list default="true" id="165573d3-0f61-444e-a8a8-c2fa7bbbff05" name="Changes" comment="fix queries be4 case sens">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/App.py" beforeDir="false" afterPath="$PROJECT_DIR$/App.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CreateCsvFromDBoutput.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CreateCsvFromDBoutput.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/chinook.db" beforeDir="false" afterPath="$PROJECT_DIR$/database/chinook.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/createCsvFromDb.py" beforeDir="false" afterPath="$PROJECT_DIR$/database/createCsvFromDb.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -94,7 +97,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="createCsvFromDb" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="createCsvFromDb (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="seminarProgrammingLanguagesProject" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -102,11 +105,11 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/database" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="C:\Users\Ben\PycharmProjects\seminarProgrammingLanguagesProject\database\createCsvFromDb.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/database/createCsvFromDb.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -181,10 +184,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="Python.App" />
+        <item itemvalue="Python.createCsvFromDb (1)" />
         <item itemvalue="Python.treeview1" />
         <item itemvalue="Python.class" />
         <item itemvalue="Python.testing" />
-        <item itemvalue="Python.createCsvFromDb" />
       </list>
     </recent_temporary>
   </component>
@@ -309,7 +312,14 @@
       <option name="project" value="LOCAL" />
       <updated>1640780169447</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="fix queries be4 case sens">
+      <created>1640788958877</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1640788958877</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -338,7 +348,8 @@
     <MESSAGE value="fixing crap" />
     <MESSAGE value="fixing multiple values insert" />
     <MESSAGE value="implement column sorting" />
-    <option name="LAST_COMMIT_MESSAGE" value="implement column sorting" />
+    <MESSAGE value="fix queries be4 case sens" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix queries be4 case sens" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -365,8 +376,28 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/database/createCsvFromDb.py</url>
-          <line>131</line>
+          <line>134</line>
           <option name="timeStamp" value="48" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/App.py</url>
+          <line>237</line>
+          <option name="timeStamp" value="49" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/App.py</url>
+          <line>303</line>
+          <option name="timeStamp" value="56" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/App.py</url>
+          <line>288</line>
+          <option name="timeStamp" value="59" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/App.py</url>
+          <line>221</line>
+          <option name="timeStamp" value="60" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
