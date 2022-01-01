@@ -10,6 +10,7 @@ cur = None
 
 DEFAULT_DATABASE_PATH = 'database/chinook.db'
 
+
 def csv_from_db_init(db=DEFAULT_DATABASE_PATH):
     global conn, cur
     conn = sqlite3.connect(db)
@@ -17,7 +18,7 @@ def csv_from_db_init(db=DEFAULT_DATABASE_PATH):
 
 
 def csv_from_db_destroy():
-    global  conn, cur
+    global conn, cur
     if conn is not None:
         conn.close()
         conn = None
@@ -161,9 +162,13 @@ def drop_table(table_name):
     query = f"DROP TABLE {table_name}"
     return execute_query(query)
 
+
 def main(stdout_file="database/CreateCsvFromDBoutput.txt", database_name="database/chinook.db"):
     sys.stdout = open(stdout_file, 'w', encoding="utf-8")
     csv_from_db_init(database_name)
+
+    # TODO delete this when finish
+    # execute_query("DROP TABLE 'artists_Name_IN_Accept'")
 
     CreateCsvFromDB()
     sys.stdout.close()
@@ -171,3 +176,4 @@ def main(stdout_file="database/CreateCsvFromDBoutput.txt", database_name="databa
 
 if __name__ == '__main__':
     main("CreateCsvFromDBoutput.txt", "chinook.db")
+

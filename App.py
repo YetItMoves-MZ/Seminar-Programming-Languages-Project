@@ -170,20 +170,20 @@ class App:
         elif operator == "!=":
             return "not_equal"
         elif operator == "<=":
-            return "smaller_or_equal;"
+            return "smaller_or_equal"
         elif operator == ">=":
             return "bigger_or_equal"
         else:
-            return operator
+            return operator.lower().replace(" ", "_")
 
     def translate_input_to_word(self, input):
         rv = input
-        invalids_chars = ["%", "'", "*"]
+        invalids_chars = ["%", "'", "*", "||", "-", "*", "/", "<>", "<", ">", ",", "=", " ", "<=", ">=", "~=", "!=",
+                          "^=", "(", ")", ":"]
         for invalid_char in invalids_chars:
-            rv = rv.replace(invalid_char, "")
+            rv = rv.replace(invalid_char, "_")
 
         return rv
-
 
     def query_builder(self, column_val, operation_val, input_val):
         # extract information for building query
@@ -192,24 +192,46 @@ class App:
 
         is_null_operation = True if operation_val in ['IS NULL', 'IS NOT NULL'] else False
         is_multi_variable = True if ',' in input_val else False
+        is_in_operation = True if operation_val in ['IN'] else False
+        val_has_digit = contains_digit(input_val)
 
         # if operation is null/ is not null
         if is_null_operation:
             query_str = f"SELECT * FROM {self.selected_table_name} WHERE {column_val} {operation_val}"
+
         # if its multiple variables: (brazil,germany,..) , (1,2,3)
-        elif is_multi_variable:
-            input_val = tuple(input_val.split(','))
-            query_str = f"SELECT * FROM {self.selected_table_name} WHERE {column_val} {operation_val}" \
-                        f" {input_val}"
+        #elif is_multi_variable:
+        #    # if val_has_digit:
+        #    input_val = input_val.split(',')
+        #    query_str = f"SELECT * FROM {self.selected_table_name} WHERE {column_val} {operation_val} ("
+        #    for i in input_val:
+        #        query_str = f"{query_str}'" + i + "',"
+        #    query_str = query_str[:-1]
+        #    query_str += ")"
+
+        elif is_in_operation:
+            if not is_multi_variable:
+                query_str = f"SELECT * FROM {self.selected_table_name} WHERE {column_val} {operation_val} " \
+                            f"('{input_val}')"
+            else:
+                input_val = tuple(input_val.split(","))
+                input_val = f"{input_val}".replace(" ", "")
+                query_str = f"SELECT * FROM {self.selected_table_name} WHERE {column_val} {operation_val} " \
+                            f"{input_val}"
+
+
+
         # single value
         else:
+           # if not val_has_digit:
+           #     input_val = f" '{input_val}'"
             query_str = f"SELECT * FROM {self.selected_table_name} WHERE {column_val} {operation_val}" \
-                        f" {input_val}"
+                        f" '{input_val}'"
 
         # case sensitive check
-        if not is_null_operation:
-            createCsvFromDb.execute_query(f"PRAGMA case_sensitive_like = {case_sensitive_val};")
-            query_str += " COLLATE NOCASE"
+        # if not is_null_operation:
+            # createCsvFromDb.execute_query(f"PRAGMA case_sensitive_like = {case_sensitive_val};")
+            # query_str += " COLLATE NOCASE"
 
         return query_str
 
@@ -274,7 +296,6 @@ class App:
         error = createCsvFromDb.insert_new_table(table_name, query_str)
         # if error is not str, no error happened
         if isinstance(error, str):
-            self.error_message_text.insert(END, error)
             return error
 
         entires = createCsvFromDb.execute_query(f"SELECT * FROM {table_name}")
@@ -340,8 +361,15 @@ class App:
             csv_file_name = f"{table_name}.csv"
             if os.path.exists(csv_file_name):
                 os.remove(csv_file_name)
-        #createCsvFromDb.csv_from_db_destroy()
+        # createCsvFromDb.csv_from_db_destroy()
         root.destroy()
+
+
+def contains_digit(string):
+    for character in string:
+        if character.isdigit():
+            return True
+    return False
 
 
 def tree_view_sort_column(treeview: ttk.Treeview, col, reverse: bool):
