@@ -435,10 +435,10 @@ def contains_digit(string):
 
 def tree_view_sort_column(treeview: ttk.Treeview, col, reverse: bool):
     """
-    tree_view_sort_column(...) to sort the table by column when clicking in column
-    :param treeview:
-    :param col:
-    :param reverse:
+    tree_view_sort_column(...) sort the table by column when clicking in column
+    :param treeview: the treeview
+    :param col: the clicked column
+    :param reverse: reverse sort or normal sort
     :return: None
     """
     try:

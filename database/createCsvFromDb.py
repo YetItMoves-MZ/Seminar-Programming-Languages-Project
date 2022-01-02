@@ -12,12 +12,21 @@ DEFAULT_DATABASE_PATH = 'database/chinook.db'
 
 
 def csv_from_db_init(db=DEFAULT_DATABASE_PATH):
+    """
+    csv_from_db_init(...) initialize the database
+    :param db: the given database
+    :return: None
+    """
     global conn, cur
     conn = sqlite3.connect(db)
     cur = conn.cursor()
 
 
 def csv_from_db_destroy():
+    """
+    csv_from_db_destroy(...) close the database connection
+    :return: None
+    """
     global conn, cur
     if conn is not None:
         conn.close()
@@ -27,7 +36,12 @@ def csv_from_db_destroy():
         cur = None
 
 
-def CreateCsvFromDB(db=DEFAULT_DATABASE_PATH):
+def create_csv_from_db(db=DEFAULT_DATABASE_PATH):
+    """
+    create_csv_from_db(...) creates a new csv from database
+    :param db: the database
+    :return: None
+    """
     print("\n" + db + " db Schema")
     cur.execute( \
         "SELECT name "
@@ -39,7 +53,6 @@ def CreateCsvFromDB(db=DEFAULT_DATABASE_PATH):
     for column in tables:
         table_name = column[0]
         print("Table Name: ", table_name)
-        # display_table(cur, conn, table_name)
         cur.execute("PRAGMA table_info(" + table_name + ")")
         info = cur.fetchall()
         print("   " + table_name + " attributes:")
@@ -48,58 +61,29 @@ def CreateCsvFromDB(db=DEFAULT_DATABASE_PATH):
         cur.execute("""SELECT * FROM """ + table_name)
         df = pd.DataFrame(cur.fetchall())
         df.columns = [x[0] for x in cur.description]
-        # display(df)
-        # print(df)
         print("\n")
 
         table = pd.read_sql_query( \
             "SELECT * from %s" % table_name, conn)
-        csvFileName = table_name + '.csv'
-        table.to_csv(csvFileName, index_label='index')
-
-    # print("\n")
-    # display_table(cur, conn, "genres")
-    # cur.close()
-    # conn.close()
-
-
-def left_align(df):
-    left_aligned_df = \
-        df.style.set_properties(**{'text-align': 'left'})
-    left_aligned_df = left_aligned_df.set_table_styles(
-        [dict(selector='th',
-              props=[('text-align', 'left')])])
-    return left_aligned_df
-
-
-def display_table(cur, conn, tableName):
-    cur.execute(f'SELECT * FROM {tableName}')
-    results = cur.fetchall()
-    print("Table Name: ", tableName)
-    table = list(pd.read_sql_query(
-        "SELECT * from %s" % tableName, conn))
-    col_width = \
-        max( \
-            len(str(word)) \
-            for row in results for word in row) + 2
-    for col in table:
-        print("".join(col.ljust(col_width)), end='')
-    print()
-    for row in results:
-        # print(row)
-        print( \
-            "".join(str(word).ljust(col_width) \
-                    for word in row))
-    print()
+        csv_file_name = table_name + '.csv'
+        table.to_csv(csv_file_name, index_label='index')
 
 
 def _extract_tables():
+    """
+    _extract_tables(...) extracts all tables from the database
+    :return: all tables as a list
+    """
     cur.execute("SELECT name FROM sqlite_master WHERE type='table';")
     tables = cur.fetchall()
     return tables
 
 
 def extract_max_columns():
+    """
+    extract_max_columns(...) extracts the highest number of columns in any table from all tables in the database
+    :return: integer maximum number of columns
+    """
     tables = _extract_tables()
 
     max_num_columns = -1
@@ -117,12 +101,21 @@ def extract_max_columns():
 
 
 def extract_table_names():
+    """
+    extract_table_names(...) extracts the table names of all tables in the database
+    :return: a list of table names
+    """
     tables = _extract_tables()
     # table name is the first item in the table
     return [table[0] for table in tables]
 
 
 def extract_table_column_names(table_name):
+    """
+    extract_table_column_names(...) extracts all the names of the columns of a given table
+    :param table_name: a string table name
+    :return: a list of column names
+    """
     cur.execute("PRAGMA table_info(" + table_name + ")")
     info = cur.fetchall()
     # column name is index number 1 in the column
@@ -130,12 +123,22 @@ def extract_table_column_names(table_name):
 
 
 def extract_entries_from_table(table_name):
+    """
+    extract_entries_from_table(...) extracts all rows from a given table
+    :param table_name: string table name
+    :return: a list of rows
+    """
     cur.execute(f"SELECT * FROM {table_name}")
     rows = cur.fetchall()
     return rows
 
 
 def execute_query(query_str):
+    """
+    execute_query(...) execute a given query
+    :param query_str: a string of the given query
+    :return: the result if the query succeed or an error message if it didn't
+    """
     try:
         cur.execute(query_str)
         # conn.commit()
@@ -145,20 +148,23 @@ def execute_query(query_str):
         return f"Query Failed: Error: {str(er)}"
 
 
-def is_select_match_input(table_name, column_name):
-    query_str = "SELECT DATA_TYPE FROM sqlite_master.COLUMNS" \
-                f" WHERE TABLE_NAME = '{table_name}' AND COLUMN_NAME = '{column_name}'"
-    cur.execute(query_str)
-    result = cur.fetchall()
-    return result
-
-
 def insert_new_table(new_table_name, query_str):
+    """
+    insert_new_table(...) creates a new table
+    :param new_table_name: the name of the table we want to create
+    :param query_str: the query that is used on the table
+    :return: result of the execute
+    """
     create_query = f"CREATE TABLE {new_table_name} AS {query_str}"
     return execute_query(create_query)
 
 
 def drop_table(table_name):
+    """
+    drop_table(...) destroy a table
+    :param table_name: string name of the table
+    :return: the result of the execute
+    """
     query = f"DROP TABLE {table_name}"
     return execute_query(query)
 
@@ -167,13 +173,9 @@ def main(stdout_file="database/CreateCsvFromDBoutput.txt", database_name="databa
     sys.stdout = open(stdout_file, 'w', encoding="utf-8")
     csv_from_db_init(database_name)
 
-    # TODO delete this when finish
-    # execute_query("DROP TABLE 'artists_Name_IN_Accept'")
-
-    CreateCsvFromDB()
+    create_csv_from_db()
     sys.stdout.close()
 
 
 if __name__ == '__main__':
     main("CreateCsvFromDBoutput.txt", "chinook.db")
-

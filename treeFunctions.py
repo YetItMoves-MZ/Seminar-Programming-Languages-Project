@@ -1,9 +1,20 @@
 def clear_tree(tree):
+    """
+    clear_tree(...) clears the treeview of a given tree
+    :param tree: the given treeview
+    :return: None
+    """
     for i in tree.get_children():
         tree.delete(i)
 
 
-def remove_columns(tree, columns, **kwargs):
+def remove_columns(tree, columns):
+    """
+    remove_columns(...) removes the given columns of a given treeview
+    :param tree: the given treeview
+    :param columns: the given columns
+    :return: None
+    """
     # Preserve current column headers
     current_columns = list(tree['columns'])
 
@@ -24,6 +35,13 @@ def remove_columns(tree, columns, **kwargs):
 
 
 def add_columns(tree, columns, **kwargs):
+    """
+    add_columns(...) adds new columns to a given treeview
+    :param tree: the given treeview
+    :param columns: a list of columns
+    :param kwargs: dictionary of keyword arguments
+    :return: None
+    """
     # Preserve current column headers and their settings
     current_columns = list(tree['columns'])
     current_columns = {key: tree.heading(key) for key in current_columns}
