@@ -16,27 +16,19 @@ wrapper2 = None
 
 class App:
     def __init__(self, root):
+        """
+        __init__(...) initialize the gui
+        :param root: the root window
+        """
         root.title("Seminar Project")
-        width = 600
+        width = 900
         height = 520
         screenwidth = root.winfo_screenwidth()
         screenheight = root.winfo_screenheight()
-        alignstr = '%dx%d+%d+%d' % (width, height, (screenwidth - width) / 2, (screenheight - height) / 2)
-        root.geometry(alignstr)
+        align_str = '%dx%d+%d+%d' % (width, height, (screenwidth - width) / 2, (screenheight - height) / 2)
+        root.geometry(align_str)
         root.resizable(width=True, height=True)
         ft = tkFont.Font(family='Times', size=10)
-
-        """
-        key is query, value is another dict containing columns and entries
-        example output would be:
-        self.output_queries = {
-            "SELECT * FROM customer WHERE STATE==Canada":  {
-                    "column_names" = [.....],
-                    "entries" = [....]
-                },
-            ....        
-        }
-        """
 
         self.output_queries = set()
 
@@ -59,12 +51,12 @@ class App:
         self.table_filter_Label["font"] = ft
         self.table_filter_Label["justify"] = "center"
         self.table_filter_Label["text"] = "Tables Filter"
-        self.table_filter_Label.place(x=405, y=35, width=180, height=30)
+        self.table_filter_Label.place(x=405, y=35, width=480, height=30)
 
         self.table_filter_list = tk.Listbox(wrapper2)
         self.table_filter_list["font"] = ft
         self.table_filter_list["justify"] = "center"
-        self.table_filter_list.place(x=410, y=65, width=170, height=230)
+        self.table_filter_list.place(x=410, y=65, width=470, height=230)
         self.table_filter_list.bind('<Button-3>', self.table_filter_delete_event)
         self.table_filter_list.bind('<<ListboxSelect>>', self.table_filter_list_select_click)
 
@@ -142,6 +134,10 @@ class App:
         root.protocol("WM_DELETE_WINDOW", self.on_closing)
 
     def init_operations(self):
+        """
+        init_operations(...) initialize operations and sets them into the checkbox
+        :return: None
+        """
         self.operation_choices = ('>', '<', '=', '>=', '<=',
                                   '!=', 'LIKE', 'IN', 'IS NULL', 'IS NOT NULL')
         self.operation_clicked.set(self.operation_choices[0])
@@ -151,7 +147,12 @@ class App:
                                                         command=tk._setit(self.operation_clicked, choice))
 
     def table_filter_delete_event(self, event):
-        if not self.validate_my_event(self.table_filter_list):
+        """
+        table_filter_delete_event(...) deletes a selected new table at a given event
+        :param event: the event that starts this function
+        :return: None
+        """
+        if not validate_my_event(self.table_filter_list):
             return
 
         selected_idx = self.table_filter_list.curselection()
@@ -160,32 +161,14 @@ class App:
         self.table_filter_list.delete(selected_idx)
         self.output_queries.remove(table_name)
 
-    def translate_operator_to_word(self, operator):
-        if operator == ">":
-            return "bigger_than"
-        elif operator == "<":
-            return "smaller_than"
-        elif operator == "=":
-            return "equal"
-        elif operator == "!=":
-            return "not_equal"
-        elif operator == "<=":
-            return "smaller_or_equal"
-        elif operator == ">=":
-            return "bigger_or_equal"
-        else:
-            return operator.lower().replace(" ", "_")
-
-    def translate_input_to_word(self, input):
-        rv = input
-        invalids_chars = ["%", "'", "*", "||", "-", "*", "/", "<>", "<", ">", ",", "=", " ", "<=", ">=", "~=", "!=",
-                          "^=", "(", ")", ":"]
-        for invalid_char in invalids_chars:
-            rv = rv.replace(invalid_char, "_")
-
-        return rv
-
     def query_builder(self, column_val, operation_val, input_val):
+        """
+        query_builder(...) builds a query string from input
+        :param column_val: column name
+        :param operation_val: operation name
+        :param input_val: the input for the given query
+        :return: query string
+        """
         # extract information for building query
 
         case_sensitive_val = self.case_sensitive_choice.get()
@@ -193,21 +176,10 @@ class App:
         is_null_operation = True if operation_val in ['IS NULL', 'IS NOT NULL'] else False
         is_multi_variable = True if ',' in input_val else False
         is_in_operation = True if operation_val in ['IN'] else False
-        val_has_digit = contains_digit(input_val)
 
         # if operation is null/ is not null
         if is_null_operation:
             query_str = f"SELECT * FROM {self.selected_table_name} WHERE {column_val} {operation_val}"
-
-        # if its multiple variables: (brazil,germany,..) , (1,2,3)
-        #elif is_multi_variable:
-        #    # if val_has_digit:
-        #    input_val = input_val.split(',')
-        #    query_str = f"SELECT * FROM {self.selected_table_name} WHERE {column_val} {operation_val} ("
-        #    for i in input_val:
-        #        query_str = f"{query_str}'" + i + "',"
-        #    query_str = query_str[:-1]
-        #    query_str += ")"
 
         elif is_in_operation:
             if not is_multi_variable:
@@ -219,23 +191,21 @@ class App:
                 query_str = f"SELECT * FROM {self.selected_table_name} WHERE {column_val} {operation_val} " \
                             f"{input_val}"
 
-
-
         # single value
         else:
-           # if not val_has_digit:
-           #     input_val = f" '{input_val}'"
             query_str = f"SELECT * FROM {self.selected_table_name} WHERE {column_val} {operation_val}" \
                         f" '{input_val}'"
 
-        # case sensitive check
-        # if not is_null_operation:
-            # createCsvFromDb.execute_query(f"PRAGMA case_sensitive_like = {case_sensitive_val};")
-            # query_str += " COLLATE NOCASE"
-
+        # case sensitive
+        createCsvFromDb.execute_query(f"PRAGMA case_sensitive_like = {case_sensitive_val};")
         return query_str
 
     def validate_query_is_new(self, new_table_name):
+        """
+        validate_query_is_new(...) checks if the given name already exists
+        :param new_table_name: newly created table name
+        :return: boolean answer
+        """
         self.error_message_text.delete('1.0', END)
         if new_table_name in self.output_queries:
             self.error_message_text.insert(END, f"{new_table_name} already exist")
@@ -243,24 +213,11 @@ class App:
 
         return True
 
-    def update_tree_view(self, entries, table_name):
-        treeFunctions.clear_tree(tree_view)
-        columns_names = createCsvFromDb.extract_table_column_names(table_name)
-        treeFunctions.remove_columns(tree_view, columns_names)
-        treeFunctions.add_columns(tree_view, columns_names)
-
-        for row in entries:
-            tree_view.insert("", tk.END, values=row)
-        tree_view.update()
-
-        cols = tree_view['columns']
-        reverse = 1
-        for col in cols:
-            tree_view.column(col, width=100, minwidth=110)  # restore to desired size
-            tree_view.heading(column=col, text=col,
-                              command=lambda _col=col: tree_view_sort_column(tree_view, _col, not reverse))
-
     def execute_query(self):
+        """
+        execute_query(...) creates and execute a query
+        :return: None
+        """
         if self.selected_table_name == "" or self.selected_table_name is None:
             return
 
@@ -268,8 +225,8 @@ class App:
         operation_val = self.operation_clicked.get()
         input_val = self.value_text.get("1.0", "end-1c")
 
-        operation_str = self.translate_operator_to_word(operation_val)
-        input_str = self.translate_input_to_word(input_val)
+        operation_str = translate_operator_to_word(operation_val)
+        input_str = translate_input_to_word(input_val)
         new_table_name = f"{self.selected_table_name}_{column_val}_{operation_str}_{input_str}"
 
         if not self.validate_query_is_new(new_table_name):
@@ -287,41 +244,53 @@ class App:
         self.output_queries.add(new_table_name)
         self.table_filter_list.insert("end", new_table_name)
 
-        self.update_tree_view(entries, new_table_name)
-
-        # TODO add when clicked on table operation list, display the query based on what was saved in output_queries
-        # TODO add when right clicked on table operation list, remove query from table list and from output queries
+        update_tree_view(entries, new_table_name)
 
     def create_new_table_from_query(self, query_str, table_name):
+        """
+        create_new_table_from_query(...) creates a new table
+        :param query_str: the given query
+        :param table_name: the new table name
+        :return: list of rows if there is no error or an error message if an error was found
+        """
         error = createCsvFromDb.insert_new_table(table_name, query_str)
         # if error is not str, no error happened
         if isinstance(error, str):
             return error
 
-        entires = createCsvFromDb.execute_query(f"SELECT * FROM {table_name}")
+        entries = createCsvFromDb.execute_query(f"SELECT * FROM {table_name}")
         # if error is not str, no error happened
-        if isinstance(entires, str):
-            error_str = entires
+        if isinstance(entries, str):
+            error_str = entries
             self.error_message_text.insert(END, error_str)
             return error
 
-        return entires
+        return entries
 
     def get_error_message_text(self):
+        """
+        get_error_message_text(...) getter
+        :return: the error message text
+        """
         return self.error_message_text
 
     def refresh(self):
+        """
+        refresh(...) resets the gui
+        :return: None
+        """
         # Reset var and delete all old options
         self.column_clicked.set('')
         self.column_checkbox['menu'].delete(0, 'end')
 
         self.operation_clicked.set('')
 
-    def validate_my_event(self, list_widget):
-        selection = list_widget.curselection()
-        return len(selection) != 0
-
     def select_table_event(self, table_name):
+        """
+        select_table_event(...)  sets the view according to the selected table
+        :param table_name: the name of the selected table
+        :return: None
+        """
         treeFunctions.clear_tree(tree_view)
         treeFunctions.remove_columns(tree_view, tree_view['columns'])
 
@@ -338,22 +307,38 @@ class App:
 
         entries = createCsvFromDb.extract_entries_from_table(self.selected_table_name)
 
-        self.update_tree_view(entries, self.selected_table_name)
+        update_tree_view(entries, self.selected_table_name)
 
     def table_filter_list_select_click(self, event):
-        if not self.validate_my_event(self.table_filter_list):
+        """
+        table_filter_list_select_click(...) on a given event: if the event is valid, then save the table name that was
+        selected from the table filter listbox and update the tree view
+        :param event: the given event
+        :return: None
+        """
+        if not validate_my_event(self.table_filter_list):
             return
         table_name = self.table_filter_list.get(self.table_filter_list.curselection())
         self.select_table_event(table_name)
 
     def table_list_select_click(self, event):
-        if not self.validate_my_event(self.table_list):
+        """
+        table_filter_list_select_click(...) on a given event: if the event is valid, then save the table name that was
+        selected from the table listbox and update the tree view
+        :param event: the given event
+        :return: None
+        """
+        if not validate_my_event(self.table_list):
             return
 
         table_name = self.table_list.get(self.table_list.curselection())
         self.select_table_event(table_name)
 
     def on_closing(self):
+        """
+        on_closing(...) deleting all newly created tables and closing the database and gui
+        :return: None
+        """
         for table_name in self.output_queries:
             createCsvFromDb.drop_table(table_name)
 
@@ -365,7 +350,83 @@ class App:
         root.destroy()
 
 
+def validate_my_event(list_widget):
+    """
+    validate_my_event(...) validates that a table was selected from the listbox
+    :param list_widget: the list widget
+    :return: boolean answer
+    """
+    selection = list_widget.curselection()
+    return len(selection) != 0
+
+
+def update_tree_view(entries, table_name):
+    """
+    update_tree_view(...) updates the tree view after a query
+    :param entries: a list of rows after the query
+    :param table_name: the name of the old table
+    :return: None
+    """
+    treeFunctions.clear_tree(tree_view)
+    columns_names = createCsvFromDb.extract_table_column_names(table_name)
+    treeFunctions.remove_columns(tree_view, columns_names)
+    treeFunctions.add_columns(tree_view, columns_names)
+
+    for row in entries:
+        tree_view.insert("", tk.END, values=row)
+    tree_view.update()
+
+    cols = tree_view['columns']
+    reverse = 1
+    for col in cols:
+        tree_view.column(col, width=100, minwidth=110)  # restore to desired size
+        tree_view.heading(column=col, text=col,
+                          command=lambda _col=col: tree_view_sort_column(tree_view, _col, not reverse))
+
+
+def translate_operator_to_word(operator):
+    """
+    translate_operator_to_word(...) translates the given operators to words
+    :param operator: the operator we want to translate into words
+    :return: a string consists of words that explains the operator
+    """
+    if operator == ">":
+        return "bigger_than"
+    elif operator == "<":
+        return "smaller_than"
+    elif operator == "=":
+        return "equal"
+    elif operator == "!=":
+        return "not_equal"
+    elif operator == "<=":
+        return "smaller_or_equal"
+    elif operator == ">=":
+        return "bigger_or_equal"
+    else:
+        return operator.lower().replace(" ", "_")
+
+
+def translate_input_to_word(input):
+    """
+    translate_input_to_word(...) create a valid string for table name from input
+    :param input: a string that may contain invalid chars
+    :return: a string that does not contain any invalid chars
+    """
+    rv = input
+    invalids_chars = ["%", "'", "*", "||", "-", "*", "/", "<>", "<", ">", ",", "=", " ", "<=", ">=", "~=", "!=",
+                      "^=", "(", ")", ":"]
+    for invalid_char in invalids_chars:
+        rv = rv.replace(invalid_char, "_")
+
+    return rv
+
+
 def contains_digit(string):
+    """
+    contains_digit(...) check if a string contains a digit
+    :param string: the string we want to check
+    :return: boolean answer
+    """
     for character in string:
         if character.isdigit():
             return True
@@ -374,7 +435,11 @@ def contains_digit(string):
 
 def tree_view_sort_column(treeview: ttk.Treeview, col, reverse: bool):
     """
-    to sort the table by column when clicking in column
+    tree_view_sort_column(...) to sort the table by column when clicking in column
+    :param treeview:
+    :param col:
+    :param reverse:
+    :return: None
     """
     try:
         data_list = [
@@ -394,11 +459,21 @@ def tree_view_sort_column(treeview: ttk.Treeview, col, reverse: bool):
 
 
 def populate_listbox(my_list_box, list_entries):
+    """
+    populate_listbox(...) populates the given listbox from a given list of entries
+    :param my_list_box: the listbox we want to populate
+    :param list_entries: the list of entries
+    :return: None
+    """
     for i in list_entries:
         my_list_box.insert("end", i)
 
 
 def configure_scrollbars():
+    """
+    configure_scrollbars(...) configure and sets the scrollbars
+    :return: None
+    """
     x_scrollbar = tk.Scrollbar(wrapper1, orient=tk.HORIZONTAL)
     x_scrollbar.pack(side=tk.BOTTOM, fill=tk.X)
 
@@ -431,11 +506,11 @@ if __name__ == "__main__":
 
     wrapper2 = tk.LabelFrame(root, text="")
     wrapper2.pack(side=tk.BOTTOM, fill="both", padx=0, pady=0)
-    wrapper2.place(x=0, y=200, width=600, height=320)
+    wrapper2.place(x=0, y=200, width=900, height=320)
     app = App(root)
     wrapper1 = tk.LabelFrame(root, text="")
     wrapper1.pack(side=tk.TOP, fill="both", padx=0, pady=0)
-    wrapper1.place(x=0, y=0, width=600, height=200)
+    wrapper1.place(x=0, y=0, width=900, height=200)
     tree_view = ttk.Treeview(wrapper1, columns=(), show='headings', selectmode='extended')
     configure_scrollbars()
 
