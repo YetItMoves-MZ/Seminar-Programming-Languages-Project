@@ -1,7 +1,7 @@
 import tkinter as tk
 import tkinter.font as tkFont
 from tkinter import ttk, END
-import createCsvFromDb
+import database.createCsvFromDb as createCsvFromDb
 import treeFunctions
 import os
 
