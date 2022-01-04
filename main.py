@@ -406,6 +406,28 @@ def translate_operator_to_word(operator):
         return operator.lower().replace(" ", "_")
 
 
+def translate_word_to_operator(words):
+    """
+    translate_word_to_operator(...) translates the given word to operator
+    :param words: the words we want to translate into operator
+    :return: string operator
+    """
+    if words == "bigger_than":
+        return ">"
+    elif words == "smaller_than":
+        return "<"
+    elif words == "equal":
+        return "="
+    elif words == "not_equal":
+        return "!="
+    elif words == "smaller_or_equal":
+        return "<="
+    elif words == "bigger_or_equal":
+        return ">="
+    else:
+        return words.Upper().replace("_", " ")
+
+
 def translate_input_to_word(input):
     """
     translate_input_to_word(...) create a valid string for table name from input
