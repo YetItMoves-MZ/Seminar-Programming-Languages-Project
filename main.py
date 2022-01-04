@@ -198,6 +198,8 @@ class App:
 
         # case sensitive
         createCsvFromDb.execute_query(f"PRAGMA case_sensitive_like = {case_sensitive_val};")
+        if not case_sensitive_val and not is_null_operation:
+            query_str += " COLLATE NOCASE"
         return query_str
 
     def validate_query_is_new(self, new_table_name):
