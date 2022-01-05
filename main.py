@@ -382,7 +382,7 @@ def update_tree_view(entries, table_name):
     reverse = 1
     for col in cols:
         tree_view.column(col, width=100, minwidth=110)  # restore to desired size
-        tree_view.heading(column=col, text=col,
+        tree_view.heading(column=col, text=col, anchor='w',
                           command=lambda _col=col: tree_view_sort_column(tree_view, _col, not reverse))
 
 
@@ -478,7 +478,7 @@ def tree_view_sort_column(treeview: ttk.Treeview, col, reverse: bool):
     for index, (val, k) in enumerate(data_list):
         treeview.move(k, "", index)
 
-    tree_view.heading(column=col, text=col,
+    tree_view.heading(column=col, text=col, anchor='w',
                       command=lambda _col=col: tree_view_sort_column(tree_view, col, not reverse))
 
 
@@ -509,8 +509,8 @@ def configure_scrollbars():
     tree_view.pack()
 
     for col in tree_view['columns']:
-        tree_view.heading(col, text=f"{col}", anchor=tk.CENTER)
-        tree_view.column(col, anchor=tk.CENTER, width=40)  # initially smaller size
+        tree_view.heading(col, text=f"{col}", anchor='w')
+        tree_view.column(col, anchor='w', width=40)  # initially smaller size
     tree_view.update()
     for col in tree_view['columns']:
         tree_view.column(col, width=100)  # restore to desired size
