@@ -27,7 +27,7 @@ class App:
         screenheight = root.winfo_screenheight()
         align_str = '%dx%d+%d+%d' % (width, height, (screenwidth - width) / 2, (screenheight - height) / 2)
         root.geometry(align_str)
-        root.resizable(width=True, height=True)
+        root.resizable(width=False, height=False)
         ft = tkFont.Font(family='Times', size=10)
 
         self.output_queries = set()
