@@ -30,16 +30,19 @@ class App:
         root.resizable(width=False, height=False)
         ft = tkFont.Font(family='Times', size=10)
 
-        self.output_queries = set()
+        self.table_name_to_query_str = {}
+        self.display_name_to_table_name = {}
 
-        self.selected_table_name = None
+        self.filter_table_name = None
+        self.database_table_name = None
 
-        self.table_list = tk.Listbox(wrapper2)
+        self.table_list_choices = ()
+        self.table_list_clicked = tk.StringVar(wrapper2)
+        self.table_list_clicked.trace("w", self.select_database_table)
+        self.table_list = tk.OptionMenu(wrapper2, self.table_list_clicked, self.table_list_choices)
         self.table_list["font"] = ft
-        self.table_list["justify"] = "center"
-        self.table_list.place(x=5, y=65, width=170, height=230)
-        self.table_list.bind('<<ListboxSelect>>', self.table_list_select_click)
-        populate_listbox(self.table_list, tables_list)
+        self.table_list.place(x=5, y=65, width=170, height=30)
+        populate_table_list_option_menu(self.table_list, tables_list, self.table_list_clicked)
 
         self.table_lists_label = tk.Label(wrapper2)
         self.table_lists_label["font"] = ft
@@ -56,8 +59,7 @@ class App:
         self.table_filter_list = tk.Listbox(wrapper2)
         self.table_filter_list["font"] = ft
         self.table_filter_list["justify"] = "center"
-        self.table_filter_list.place(x=410, y=65, width=470, height=230)
-        self.table_filter_list.bind('<Button-3>', self.table_filter_delete_event)
+        self.table_filter_list.place(x=410, y=65, width=470, height=190)
         self.table_filter_list.bind('<<ListboxSelect>>', self.table_filter_list_select_click)
 
         self.column_label = tk.Label(wrapper2)
@@ -93,6 +95,7 @@ class App:
 
         self.operation_choices = ()
         self.operation_clicked = tk.StringVar(wrapper2)
+        self.operation_clicked.trace("w", self.select_sql_operation)
         self.operation_checkbox = tk.OptionMenu(wrapper2, self.operation_clicked, self.operation_choices)
         self.operation_checkbox["font"] = ft
         self.operation_checkbox.place(x=255, y=130, width=130, height=30)
@@ -118,19 +121,32 @@ class App:
                                                       offvalue=0)
         self.case_sensitive_checkbox.place(x=270, y=230, width=20, height=30)
 
+        self.add_button = tk.Button(wrapper2)
+        self.add_button["font"] = ft
+        self.add_button["justify"] = "center"
+        self.add_button["text"] = "+"
+        self.add_button.place(x=300, y=225, width=30, height=30)
+        self.add_button["command"] = self.add_query_to_table_filter_list
+
+        self.remove_button = tk.Button(wrapper2)
+        self.remove_button["font"] = ft
+        self.remove_button["justify"] = "center"
+        self.remove_button["text"] = "-"
+        self.remove_button.place(x=345, y=225, width=30, height=30)
+        self.remove_button["command"] = self.table_filter_delete_event
+
         self.execute_button = tk.Button(wrapper2)
         self.execute_button["font"] = ft
         self.execute_button["justify"] = "center"
         self.execute_button["text"] = "Execute"
-        self.execute_button.place(x=315, y=230, width=70, height=25)
+        self.execute_button.place(x=255, y=270, width=130, height=25)
         self.execute_button["command"] = self.execute_query
 
         self.error_message_text = tk.Text(wrapper2)
         self.error_message_text["font"] = ft
-        self.error_message_text.place(x=190, y=270, width=210, height=35)
+        self.error_message_text.place(x=410, y=270, width=470, height=35)
 
         self.init_operations()
-
         root.protocol("WM_DELETE_WINDOW", self.on_closing)
 
     def init_operations(self):
@@ -140,13 +156,30 @@ class App:
         """
         self.operation_choices = ('>', '<', '=', '>=', '<=',
                                   '!=', 'LIKE', 'IN', 'IS NULL', 'IS NOT NULL')
-        self.operation_clicked.set(self.operation_choices[0])
 
+        self.operation_clicked.set(self.operation_choices[0])
         for choice in self.operation_choices:
             self.operation_checkbox['menu'].add_command(label=choice,
                                                         command=tk._setit(self.operation_clicked, choice))
 
-    def table_filter_delete_event(self, event):
+    def delete_filter_table(self, displayed_table_name):
+        """
+        delete_filter_table(...) deletes a selected table
+        :param displayed_table_name: a table name to delete
+        :return: None
+        """
+        table_name = self.display_name_to_table_name[displayed_table_name]
+        createCsvFromDb.drop_table(table_name)
+
+        del self.table_name_to_query_str[table_name]
+        del self.display_name_to_table_name[displayed_table_name]
+        self.filter_table_name = None
+
+        csv_file_name = f"{table_name}.csv"
+        if os.path.exists(csv_file_name):
+            os.remove(csv_file_name)
+
+    def table_filter_delete_event(self):
         """
         table_filter_delete_event(...) deletes a selected new table at a given event
         :param event: the event that starts this function
@@ -156,10 +189,10 @@ class App:
             return
 
         selected_idx = self.table_filter_list.curselection()
-        table_name = self.table_filter_list.get(selected_idx)
-        createCsvFromDb.drop_table(table_name)
+        displayed_table_name = self.table_filter_list.get(selected_idx)
         self.table_filter_list.delete(selected_idx)
-        self.output_queries.remove(table_name)
+
+        self.delete_filter_table(displayed_table_name)
 
     def query_builder(self, column_val, operation_val, input_val):
         """
@@ -179,21 +212,21 @@ class App:
 
         # if operation is null/ is not null
         if is_null_operation:
-            query_str = f"SELECT * FROM {self.selected_table_name} WHERE {column_val} {operation_val}"
+            query_str = f"SELECT * FROM {self.database_table_name} WHERE {column_val} {operation_val}"
 
         elif is_in_operation:
             if not is_multi_variable:
-                query_str = f"SELECT * FROM {self.selected_table_name} WHERE {column_val} {operation_val} " \
+                query_str = f"SELECT * FROM {self.database_table_name} WHERE {column_val} {operation_val} " \
                             f"('{input_val}')"
             else:
                 input_val = tuple(input_val.split(","))
                 input_val = f"{input_val}".replace(" ", "")
-                query_str = f"SELECT * FROM {self.selected_table_name} WHERE {column_val} {operation_val} " \
+                query_str = f"SELECT * FROM {self.database_table_name} WHERE {column_val} {operation_val} " \
                             f"{input_val}"
 
         # single value
         else:
-            query_str = f"SELECT * FROM {self.selected_table_name} WHERE {column_val} {operation_val}" \
+            query_str = f"SELECT * FROM {self.database_table_name} WHERE {column_val} {operation_val}" \
                         f" '{input_val}'"
 
         # case sensitive
@@ -209,32 +242,61 @@ class App:
         :return: boolean answer
         """
         self.error_message_text.delete('1.0', END)
-        if new_table_name in self.output_queries:
+        if new_table_name in self.table_name_to_query_str:
             self.error_message_text.insert(END, f"{new_table_name} already exist")
             return False
 
         return True
 
-    def execute_query(self):
+    def create_new_table_name(self):
         """
-        execute_query(...) creates and execute a query
-        :return: None
+        create_new_table_name: create table name from gui elements
+        :return: new table name
         """
-        if self.selected_table_name == "" or self.selected_table_name is None:
-            return
-
         column_val = self.column_clicked.get()
         operation_val = self.operation_clicked.get()
         input_val = self.value_text.get("1.0", "end-1c")
 
         operation_str = translate_operator_to_word(operation_val)
         input_str = translate_input_to_word(input_val)
-        new_table_name = f"{self.selected_table_name}_{column_val}_{operation_str}_{input_str}"
+        new_table_name = f"{column_val}_{operation_str}_{input_str}"
+
+        return new_table_name
+
+    def add_query_to_table_filter_list(self):
+        """
+        add_query_to_table_filter_list(...) add the query to filter table
+        :return: None
+        """
+        if self.database_table_name == "" or self.database_table_name is None:
+            return
+
+        column_val = self.column_clicked.get()
+        operation_val = self.operation_clicked.get()
+        input_val = self.value_text.get("1.0", "end-1c")
+
+        new_table_name = self.create_new_table_name()
 
         if not self.validate_query_is_new(new_table_name):
             return
 
         query_str = self.query_builder(column_val, operation_val, input_val)
+
+        new_query_name = f"{column_val} {operation_val} {input_val}"
+        self.display_name_to_table_name[new_query_name] = new_table_name
+        self.table_name_to_query_str[new_table_name] = query_str
+        self.table_filter_list.insert("end", new_query_name)
+
+    def execute_query(self):
+        """
+        execute_query(...) creates and execute a query
+        :return: None
+        """
+        if self.filter_table_name == "" or self.filter_table_name is None:
+            return
+
+        new_table_name = self.display_name_to_table_name[self.filter_table_name]
+        query_str = self.table_name_to_query_str[new_table_name]
 
         # create new table and return its entries
         entries = self.create_new_table_from_query(query_str, new_table_name)
@@ -242,9 +304,6 @@ class App:
             error_str = entries
             self.error_message_text.insert(END, error_str)
             return
-
-        self.output_queries.add(new_table_name)
-        self.table_filter_list.insert("end", new_table_name)
 
         update_tree_view(entries, new_table_name)
 
@@ -258,7 +317,9 @@ class App:
         error = createCsvFromDb.insert_new_table(table_name, query_str)
         # if error is not str, no error happened
         if isinstance(error, str):
-            return error
+            error_lower = error.lower()
+            if "query failed" not in error_lower or "already exist" not in error_lower:
+                return error
 
         entries = createCsvFromDb.execute_query(f"SELECT * FROM {table_name}")
         # if error is not str, no error happened
@@ -297,19 +358,19 @@ class App:
         treeFunctions.remove_columns(tree_view, tree_view['columns'])
 
         self.refresh()
-        self.selected_table_name = table_name
+        self.database_table_name = table_name
 
-        self.column_choices = createCsvFromDb.extract_table_column_names(self.selected_table_name)
+        self.column_choices = createCsvFromDb.extract_table_column_names(self.database_table_name)
         self.column_clicked.set(self.column_choices[0])
 
         for choice in self.column_choices:
             self.column_checkbox['menu'].add_command(label=choice, command=tk._setit(self.column_clicked, choice))
 
-        self.from_table_text.set(self.selected_table_name)
+        self.from_table_text.set(self.database_table_name)
 
-        entries = createCsvFromDb.extract_entries_from_table(self.selected_table_name)
+        entries = createCsvFromDb.extract_entries_from_table(self.database_table_name)
 
-        update_tree_view(entries, self.selected_table_name)
+        update_tree_view(entries, self.database_table_name)
 
     def table_filter_list_select_click(self, event):
         """
@@ -321,34 +382,36 @@ class App:
         if not validate_my_event(self.table_filter_list):
             return
         table_name = self.table_filter_list.get(self.table_filter_list.curselection())
-        self.select_table_event(table_name)
+        self.filter_table_name = table_name
 
-    def table_list_select_click(self, event):
+    def select_database_table(self, *args):
         """
-        table_filter_list_select_click(...) on a given event: if the event is valid, then save the table name that was
-        selected from the table listbox and update the tree view
-        :param event: the given event
-        :return: None
+        option_changed(...) table_list_clicked (OptionMenu) change event
         """
-        if not validate_my_event(self.table_list):
-            return
+        table_name = self.table_list_clicked.get()
+        if len(table_name) != 0:
+            self.table_list_clicked.set(f'{table_name}')
+            self.select_table_event(table_name)
 
-        table_name = self.table_list.get(self.table_list.curselection())
-        self.select_table_event(table_name)
+    def select_sql_operation(self, *args):
+        """
+        select_sql_operation(...) operation_checkbox (OptionMenu) change event
+        """
+        operation_name = self.operation_clicked.get()
+        self.value_text.delete('1.0', tk.END)
+        null_operation = ['IS NULL', 'IS NOT NULL']
+        if len(operation_name) != 0 and operation_name in null_operation:
+            self.value_text.configure(state=tk.DISABLED)
+        else:
+            self.value_text.configure(state=tk.NORMAL)
 
     def on_closing(self):
         """
         on_closing(...) deleting all newly created tables and closing the database and gui
         :return: None
         """
-        for table_name in self.output_queries:
-            createCsvFromDb.drop_table(table_name)
-
-            # delete generated file
-            csv_file_name = f"{table_name}.csv"
-            if os.path.exists(csv_file_name):
-                os.remove(csv_file_name)
-        # createCsvFromDb.csv_from_db_destroy()
+        for displayed_table_name in self.display_name_to_table_name.keys():
+            self.delete_filter_table(displayed_table_name)
         root.destroy()
 
 
@@ -358,6 +421,7 @@ def validate_my_event(list_widget):
     :param list_widget: the list widget
     :return: boolean answer
     """
+
     selection = list_widget.curselection()
     return len(selection) != 0
 
@@ -482,15 +546,17 @@ def tree_view_sort_column(treeview: ttk.Treeview, col, reverse: bool):
                       command=lambda _col=col: tree_view_sort_column(tree_view, col, not reverse))
 
 
-def populate_listbox(my_list_box, list_entries):
+def populate_table_list_option_menu(my_option_menu, list_entries, table_list_clicked):
     """
-    populate_listbox(...) populates the given listbox from a given list of entries
-    :param my_list_box: the listbox we want to populate
+    populate_table_list_option_menu(...) populates the given OptionMenu from a given list of entries
+    :param my_option_menu: the OptionMenu we want to populate
     :param list_entries: the list of entries
+    :param table_list_clicked: provides helper functions for directly creating and accessing variables
     :return: None
     """
-    for i in list_entries:
-        my_list_box.insert("end", i)
+
+    for choice in list_entries:
+        my_option_menu['menu'].add_command(label=choice, command=tk._setit(table_list_clicked, choice))
 
 
 def configure_scrollbars():

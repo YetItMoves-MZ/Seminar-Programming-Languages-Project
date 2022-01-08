@@ -1,8 +1,6 @@
 import sqlite3
-import traceback
 
 import pandas as pd
-from IPython.display import display
 import sys
 
 conn = None
@@ -173,6 +171,7 @@ def main(stdout_file="database/CreateCsvFromDBoutput.txt", database_name="databa
     sys.stdout = open(stdout_file, 'w', encoding="utf-8")
     csv_from_db_init(database_name)
 
+    drop_table('__5')
     create_csv_from_db()
     sys.stdout.close()
 
