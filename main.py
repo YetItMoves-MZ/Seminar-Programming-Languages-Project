@@ -30,6 +30,7 @@ class App:
         root.resizable(width=False, height=False)
         ft = tkFont.Font(family='Times', size=10)
 
+        # display name -> table name -> query str
         self.table_name_to_query_str = {}
         self.display_name_to_table_name = {}
 
@@ -168,21 +169,21 @@ class App:
         :param displayed_table_name: a table name to delete
         :return: None
         """
-        table_name = self.display_name_to_table_name[displayed_table_name]
-        createCsvFromDb.drop_table(table_name)
+        for all_displayed_table_name in self.display_name_to_table_name:
+            table_name = self.display_name_to_table_name[all_displayed_table_name]
+            createCsvFromDb.drop_table(table_name)
 
+            csv_file_name = f"{table_name}.csv"
+            if os.path.exists(csv_file_name):
+                os.remove(csv_file_name)
+        table_name = self.display_name_to_table_name[displayed_table_name]
         del self.table_name_to_query_str[table_name]
         del self.display_name_to_table_name[displayed_table_name]
         self.filter_table_name = None
 
-        csv_file_name = f"{table_name}.csv"
-        if os.path.exists(csv_file_name):
-            os.remove(csv_file_name)
-
     def table_filter_delete_event(self):
         """
-        table_filter_delete_event(...) deletes a selected new table at a given event
-        :param event: the event that starts this function
+        table_filter_delete_event(...) deletes a selected new table
         :return: None
         """
         if not validate_my_event(self.table_filter_list):
@@ -203,7 +204,6 @@ class App:
         :return: query string
         """
         # extract information for building query
-
         case_sensitive_val = self.case_sensitive_choice.get()
 
         is_null_operation = True if operation_val in ['IS NULL', 'IS NOT NULL'] else False
@@ -212,22 +212,19 @@ class App:
 
         # if operation is null/ is not null
         if is_null_operation:
-            query_str = f"SELECT * FROM {self.database_table_name} WHERE {column_val} {operation_val}"
+            query_str = f"WHERE {column_val} {operation_val}"
 
         elif is_in_operation:
             if not is_multi_variable:
-                query_str = f"SELECT * FROM {self.database_table_name} WHERE {column_val} {operation_val} " \
-                            f"('{input_val}')"
+                query_str = f"WHERE {column_val} {operation_val} ('{input_val}')"
             else:
                 input_val = tuple(input_val.split(","))
                 input_val = f"{input_val}".replace(" ", "")
-                query_str = f"SELECT * FROM {self.database_table_name} WHERE {column_val} {operation_val} " \
-                            f"{input_val}"
+                query_str = f"WHERE {column_val} {operation_val} {input_val}"
 
         # single value
         else:
-            query_str = f"SELECT * FROM {self.database_table_name} WHERE {column_val} {operation_val}" \
-                        f" '{input_val}'"
+            query_str = f"WHERE {column_val} {operation_val} '{input_val}'"
 
         # case sensitive
         createCsvFromDb.execute_query(f"PRAGMA case_sensitive_like = {case_sensitive_val};")
@@ -275,6 +272,12 @@ class App:
         operation_val = self.operation_clicked.get()
         input_val = self.value_text.get("1.0", "end-1c")
 
+        is_null_operation = True if operation_val in ['IS NULL', 'IS NOT NULL'] else False
+        if not is_null_operation and input_val == "":
+            self.error_message_text.delete("1.0", tk.END)
+            self.error_message_text.insert(tk.END, "no value was given")
+            return
+
         new_table_name = self.create_new_table_name()
 
         if not self.validate_query_is_new(new_table_name):
@@ -292,20 +295,29 @@ class App:
         execute_query(...) creates and execute a query
         :return: None
         """
-        if self.filter_table_name == "" or self.filter_table_name is None:
-            return
+        # delete previews error
+        self.error_message_text.delete("1.0", tk.END)
 
-        new_table_name = self.display_name_to_table_name[self.filter_table_name]
-        query_str = self.table_name_to_query_str[new_table_name]
+        previews_table_name = ""
+        for display_name in self.display_name_to_table_name:
+            if previews_table_name == "":
+                previews_table_name = self.database_table_name
 
-        # create new table and return its entries
-        entries = self.create_new_table_from_query(query_str, new_table_name)
-        if isinstance(entries, str):
-            error_str = entries
-            self.error_message_text.insert(END, error_str)
-            return
+            new_table_name = self.display_name_to_table_name[display_name]
+            query_str = self.table_name_to_query_str[new_table_name]
+            query_str = f"SELECT * FROM {previews_table_name} {query_str}"
 
-        update_tree_view(entries, new_table_name)
+            # create new table and return its entries
+            entries = self.create_new_table_from_query(query_str, new_table_name)
+            if isinstance(entries, str):
+                error_str = entries
+                self.error_message_text.insert(END, error_str)
+                return
+            previews_table_name = self.display_name_to_table_name[display_name]
+
+        # check if dictionary is empty
+        if self.table_filter_list.get(0):
+            update_tree_view(entries, new_table_name)
 
     def create_new_table_from_query(self, query_str, table_name):
         """
@@ -315,13 +327,14 @@ class App:
         :return: list of rows if there is no error or an error message if an error was found
         """
         error = createCsvFromDb.insert_new_table(table_name, query_str)
+
         # if error is not str, no error happened
         if isinstance(error, str):
             error_lower = error.lower()
             if "query failed" not in error_lower or "already exist" not in error_lower:
                 return error
-
         entries = createCsvFromDb.execute_query(f"SELECT * FROM {table_name}")
+
         # if error is not str, no error happened
         if isinstance(entries, str):
             error_str = entries
@@ -387,6 +400,7 @@ class App:
     def select_database_table(self, *args):
         """
         option_changed(...) table_list_clicked (OptionMenu) change event
+        :return: None
         """
         table_name = self.table_list_clicked.get()
         if len(table_name) != 0:
@@ -396,6 +410,7 @@ class App:
     def select_sql_operation(self, *args):
         """
         select_sql_operation(...) operation_checkbox (OptionMenu) change event
+        :return: None
         """
         operation_name = self.operation_clicked.get()
         self.value_text.delete('1.0', tk.END)
@@ -410,9 +425,19 @@ class App:
         on_closing(...) deleting all newly created tables and closing the database and gui
         :return: None
         """
-        for displayed_table_name in self.display_name_to_table_name.keys():
-            self.delete_filter_table(displayed_table_name)
+
+        self.delete_all_filter_tables()
         root.destroy()
+
+    def delete_all_filter_tables(self):
+        """
+        delete_all_filter_tables(...) deleting all filter tables
+        :return: None
+        """
+        temp = self.display_name_to_table_name.copy()
+        for displayed_table_name in temp.keys():
+            self.delete_filter_table(displayed_table_name)
+        temp.clear()
 
 
 def validate_my_event(list_widget):
